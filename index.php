@@ -10,6 +10,14 @@ $tasks = [
     ['Купить корм для кота', false, 'Домашние дела', 'Нет'],
     ['Заказать пиццу',	false, 'Домашние дела',	'Нет']
 ];
+
+function TasksCount($tasks_list, $nametask) {
+    $i=0;
+    foreach ($tasks_list as $value) {
+        if ($value[2] == $nametask) { $i++; }
+    }
+    return $i;
+}
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -54,7 +62,7 @@ $tasks = [
                         <?php foreach ($main_list as $value):?>
                         <li class="main-navigation__list-item">
                             <a class="main-navigation__list-item-link" href="#"><?=$value;?></a>
-                            <span class="main-navigation__list-item-count">0</span>
+                            <span class="main-navigation__list-item-count"><?php echo TasksCount($tasks, $value); ?></span>
                         </li>
                         <?php endforeach;?>
                     </ul>
