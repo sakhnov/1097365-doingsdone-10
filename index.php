@@ -42,6 +42,18 @@ $tasks = array(
 		'done' => 'Нет'
 	)
 );
+
+function tasksCount(array $tasks_list, $nametask) {
+    $i = 0;
+    foreach ($tasks_list as $value) {
+        if ($value['type'] == $nametask) { 
+			$i++; 
+		}
+    }
+	
+    return $i;
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -86,7 +98,7 @@ $tasks = array(
                         <?php foreach ($main_list as $value): ?>
 							<li class="main-navigation__list-item">
 								<a class="main-navigation__list-item-link" href="#"><?= $value; ?></a>
-								<span class="main-navigation__list-item-count">0</span>
+								<span class="main-navigation__list-item-count"><?= tasksCount($tasks, $value); ?></span>
 							</li>
                         <?php endforeach; ?>
                     </ul>
@@ -124,10 +136,10 @@ $tasks = array(
 
         <!--показывать следующий тег <tr/>, если переменная $show_complete_tasks равна единице-->
 
-                <?php foreach ($tasks as $value):?>
+                <?php foreach ($tasks as $value): ?>
                     <?php if ($value['done'] == 'Да' && $show_complete_tasks == 0) { 					
-						continue; 
-					} ?>
+                      continue; 
+                    } ?>
 
                         <tr class="tasks__item task <?php if ($value['done'] == 'Да') { echo 'task--completed'; } ?>">
                             <td class="task__select">
@@ -140,7 +152,7 @@ $tasks = array(
                             <td class="task__controls"></td>
                         </tr>
 
-				<?php endforeach; ?>
+				        <?php endforeach; ?>
                 </table>
             </main>
         </div>
