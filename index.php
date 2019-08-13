@@ -2,21 +2,51 @@
 // показывать или нет выполненные задачи
 $show_complete_tasks = rand(0, 1);
 
-$main_list = ['Входящие', 'Учеба', 'Работа', 'Домашние дела', 'Авто'];
+$main_list = array('Входящие', 'Учеба', 'Работа', 'Домашние дела', 'Авто');
 
-$tasks = [
-    ['Собеседование в IT компании',	'01.12.2018', 'Работа',	'Нет'],
-    ['Выполнить тестовое задание', '25.12.2018', 'Работа', 'Нет'],
-    ['Сделать задание первого раздела',	'21.12.2018', 'Учеба', 'Да'],
-    ['Встреча с другом', '22.12.2018',	'Входящие',	'Нет'],
-    ['Купить корм для кота', false, 'Домашние дела', 'Нет'],
-    ['Заказать пиццу',	false, 'Домашние дела',	'Нет']
-];
+$tasks = array(
+    array(
+		'name' => 'Собеседование в IT компании',
+		'deadline' => '01.12.2018', 
+		'type' => 'Работа',	
+		'done' => 'Нет'
+	),	
+    array(
+		'name' => 'Выполнить тестовое задание', 
+		'deadline' => '25.12.2018', 
+		'type' => 'Работа', 
+		'done' => 'Нет'
+	),
+    array(
+		'name' => 'Сделать задание первого раздела',	
+		'deadline' => '21.12.2018', 
+		'type' => 'Учеба', 
+		'done' => 'Да'
+	),
+    array(
+		'name' => 'Встреча с другом', 
+		'deadline' => '22.12.2018',	
+		'type' => 'Входящие',	
+		'done' => 'Нет'
+	),
+    array(
+		'name' => 'Купить корм для кота', 
+		'deadline' => false, 
+		'type' => 'Домашние дела', 
+		'done' => 'Нет'
+	),
+    array(
+		'name' => 'Заказать пиццу',	
+		'deadline' => false, 
+		'type' => 'Домашние дела',	
+		'done' => 'Нет'
+	)
+);
 
-function tasksCount($tasks_list, $nametask) {
+function tasksCount(array $tasks_list, $nametask) {
     $i = 0;
     foreach ($tasks_list as $value) {
-        if ($value[2] == $nametask) { 
+        if ($value['type'] == $nametask) { 
 			$i++; 
 		}
     }
@@ -106,18 +136,18 @@ function tasksCount($tasks_list, $nametask) {
         <!--показывать следующий тег <tr/>, если переменная $show_complete_tasks равна единице-->
 
                 <?php foreach ($tasks as $value): ?>
-                    <?php if ($value[3] == 'Да' && $show_complete_tasks == 0) { 					
+                    <?php if ($value['done'] == 'Да' && $show_complete_tasks == 0) { 					
 						continue; 
 					} ?>
 
-                        <tr class="tasks__item task <?php if ($value[3] == 'Да') { echo 'task--completed'; } ?>">
+                        <tr class="tasks__item task <?php if ($value['done'] == 'Да') { echo 'task--completed'; } ?>">
                             <td class="task__select">
                                 <label class="checkbox task__checkbox">
                                     <input class="checkbox__input visually-hidden" type="checkbox" >
-                                    <span class="checkbox__text"><?= $value[0]; ?></span>
+                                    <span class="checkbox__text"><?= $value['name']; ?></span>
                                 </label>
                             </td>
-                            <td class="task__date"><?= $value[1]; ?></td>
+                            <td class="task__date"><?= $value['deadline']; ?></td>
                             <td class="task__controls"></td>
                         </tr>
 
