@@ -53,6 +53,7 @@ function tasksCount(array $tasks_list, $nametask) {
 	
     return $i;
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -137,8 +138,8 @@ function tasksCount(array $tasks_list, $nametask) {
 
                 <?php foreach ($tasks as $value): ?>
                     <?php if ($value['done'] == 'Да' && $show_complete_tasks == 0) { 					
-						continue; 
-					} ?>
+                      continue; 
+                    } ?>
 
                         <tr class="tasks__item task <?php if ($value['done'] == 'Да') { echo 'task--completed'; } ?>">
                             <td class="task__select">
@@ -151,7 +152,7 @@ function tasksCount(array $tasks_list, $nametask) {
                             <td class="task__controls"></td>
                         </tr>
 
-				<?php endforeach; ?>
+				        <?php endforeach; ?>
                 </table>
             </main>
         </div>
