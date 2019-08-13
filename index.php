@@ -13,11 +13,14 @@ $tasks = [
     ['Заказать пиццу',	false, 'Домашние дела',	'Нет']
 ];
 
-function TasksCount($tasks_list, $nametask) {
-    $i=0;
+function tasksCount($tasks_list, $nametask) {
+    $i = 0;
     foreach ($tasks_list as $value) {
-        if ($value[2] == $nametask) { $i++; }
+        if ($value[2] == $nametask) { 
+			$i++; 
+		}
     }
+	
     return $i;
 }
 ?>
@@ -61,21 +64,12 @@ function TasksCount($tasks_list, $nametask) {
 
                 <nav class="main-navigation">
                     <ul class="main-navigation__list">
-<<<<<<< HEAD
                         <?php foreach ($main_list as $value): ?>
 							<li class="main-navigation__list-item">
 								<a class="main-navigation__list-item-link" href="#"><?= $value; ?></a>
-								<span class="main-navigation__list-item-count">0</span>
+								<span class="main-navigation__list-item-count"><?= tasksCount($tasks, $value); ?></span>
 							</li>
                         <?php endforeach; ?>
-=======
-                        <?php foreach ($main_list as $value):?>
-                        <li class="main-navigation__list-item">
-                            <a class="main-navigation__list-item-link" href="#"><?=$value;?></a>
-                            <span class="main-navigation__list-item-count"><?php echo TasksCount($tasks, $value); ?></span>
-                        </li>
-                        <?php endforeach;?>
->>>>>>> a8ee7e049d5016fd088ba48ffef111b09cbb3dd7
                     </ul>
                 </nav>
 
@@ -111,7 +105,7 @@ function TasksCount($tasks_list, $nametask) {
 
         <!--показывать следующий тег <tr/>, если переменная $show_complete_tasks равна единице-->
 
-                <?php foreach ($tasks as $value):?>
+                <?php foreach ($tasks as $value): ?>
                     <?php if ($value[3] == 'Да' && $show_complete_tasks == 0) { 					
 						continue; 
 					} ?>
