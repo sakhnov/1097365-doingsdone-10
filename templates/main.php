@@ -49,7 +49,7 @@
                 continue;
             } ?>
 
-            <tr class="tasks__item task <?php if ($value['done'] == 'Да') { echo 'task--completed'; } ?>">
+            <tr class="tasks__item task <?php if ($value['done'] == 'Да') { echo 'task--completed'; } ?> <?= getTime(htmlspecialchars($value['deadline'])); ?>">
                 <td class="task__select">
                     <label class="checkbox task__checkbox">
                         <input class="checkbox__input visually-hidden" type="checkbox" >

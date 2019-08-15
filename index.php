@@ -26,7 +26,7 @@ $tasks = [
 	],
     [
 		'name' => 'Встреча с другом',
-		'deadline' => '22.12.2018',
+		'deadline' => '15.08.2019',
 		'type' => 'Входящие',
 		'done' => 'Нет'
 	],
@@ -55,11 +55,19 @@ function tasksCount(array $tasks_list, $nametask) {
     return $i;
 }
 
+function getTime($deadline) {
+    if (($deadline) && (floor(time() - strtotime($deadline)) <= 24*60*60)) {
+
+        return 'task--important';
+    }
+}
+
+
 $title = 'Список задач - Дела в Порядке';
 $username = 'Дмитрий';
 
 $content = include_template( 'main.php', ['main_list' => $main_list, 'tasks' => $tasks, 'show_complete_tasks' => $show_complete_tasks] );
-print ( include_template('layout.php', ['content' => $content, 'title' => $title, 'username' => $username]) );
+echo include_template('layout.php', ['content' => $content, 'title' => $title, 'username' => $username]);
 ?>
 
 
