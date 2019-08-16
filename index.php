@@ -26,7 +26,7 @@ $tasks = [
 	],
     [
 		'name' => 'Встреча с другом',
-		'deadline' => '15.08.2019',
+		'deadline' => '16.08.2019',
 		'type' => 'Входящие',
 		'done' => 'Нет'
 	],
@@ -44,7 +44,15 @@ $tasks = [
 	]
 ];
 
-function tasksCount(array $tasks_list, $nametask) {
+/**
+* Функция taskCount - высчитывает кол-во заданий одного типа 
+* 
+* @param array $tasks_list Массив с задачами
+* @param string $nametask Название типа задачи
+* @return int 
+*/
+
+function tasksCount(array $tasks_list, string $nametask): int  {
     $i = 0;
     foreach ($tasks_list as $value) {
         if ($value['type'] == $nametask) {
@@ -55,11 +63,21 @@ function tasksCount(array $tasks_list, $nametask) {
     return $i;
 }
 
-function getTime($deadline) {
+/**
+* Функция isDeadlineClose - определяет осталось ли до дедлайна меньше суток
+* 
+* @param string $deadline дата завешения исполнения задачи.
+* @return boolean 
+*/
+
+function isDeadlineClose(string $deadline): bool {
     if (($deadline) && (floor(time() - strtotime($deadline)) <= 24*60*60)) {
 
-        return 'task--important';
-    }
+        return true; //'task--important';
+    } else {
+		
+		return false;
+	}
 }
 
 
