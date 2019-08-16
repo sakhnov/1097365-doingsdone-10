@@ -71,13 +71,8 @@ function tasksCount(array $tasks_list, string $nametask): int  {
 */
 
 function isDeadlineClose(string $deadline): bool {
-    if (($deadline) && (floor(time() - strtotime($deadline)) <= 24*60*60)) {
-
-        return true; //'task--important';
-    } else {
-		
-		return false;
-	}
+    
+	return ($deadline && (floor(time() - strtotime($deadline)) <= 24*60*60));
 }
 
 
