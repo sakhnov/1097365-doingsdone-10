@@ -17,7 +17,7 @@ CREATE TABLE `1097365-doingsdone-10`.`task` (
 	`status` BOOLEAN NOT NULL ,
 	`title` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
 	`file` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL ,
-	`deadline` DATE DEFAULT NULL ,
+	`deadline` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL ,
 	PRIMARY KEY (`id`)
 );
 
