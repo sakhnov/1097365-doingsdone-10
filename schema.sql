@@ -1,4 +1,4 @@
-CREATE `DATABASE 1097365-doingsdone-10`;
+CREATE DATABASE `1097365-doingsdone-10`;
 
 USE `1097365-doingsdone-10`;
 
