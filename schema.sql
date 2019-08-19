@@ -28,3 +28,18 @@ CREATE TABLE `1097365-doingsdone-10`.`user` (
 	 `pass` TEXT NOT NULL ,
 	 PRIMARY KEY (`id`)
 );
+
+/* Создание индекса для email. Так как будет выборка по email при авторизации полльзователя */
+CREATE UNIQUE INDEX email ON user(email);
+
+/* Создание индекса для id_user. Выборка задач для определенного пользователя */
+CREATE INDEX id_user ON project(id_user);
+
+/* Создание индекса для project_name. Выборка для меню с сортировкой по названию проекта. */
+CREATE INDEX project_name ON project(project_name);
+
+/* Создание индекса для id_project. Выборка задач для определеного проекта */
+CREATE INDEX id_project ON task(id_project);
+
+/* Создание индекса для title.  Выборка и списка задач и возможная сортировка по названию. */
+CREATE INDEX title ON task(title);
