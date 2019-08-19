@@ -2,6 +2,9 @@
 INSERT INTO user SET email = 'dm.sakhnov@gmail.com', name = 'Дмитрий', pass = 'Пароль'; /* id = 2 */
 INSERT INTO user SET email = 'vasvas@gmail.com', name = 'Василий', pass = 'Пароль'; /* id = 2 */
 
+/* Создание индекса для Email*/
+CREATE UNIQUE INDEX email ON user(email);
+
 /* Добавление проектов для пользователя с id = 1 */
 INSERT INTO project SET id_user = 1, project_name = 'Входящие';  /* id = 1 */
 INSERT INTO project SET id_user = 1, project_name = 'Учеба'; /* id = 2 */
@@ -16,6 +19,11 @@ INSERT INTO project SET id_user = 2, project_name = 'Работа'; /* id = 3 */
 INSERT INTO project SET id_user = 2, project_name = 'Домашние дела'; /* id = 4 */
 INSERT INTO project SET id_user = 2, project_name = 'Авто'; /* id = 5 */
 
+/* Создание индекса для id_user */
+CREATE INDEX id_user ON project(id_user);
+/* Создание индекса для project_name */
+CREATE INDEX project_name ON project(project_name)
+
 /* Добавление задач для разных пользователей*/
 INSERT INTO task SET id_project = 3, status = false, title = 'Собеседование в IT компании', deadline = '01.12.2018'; /* id = 1 */
 INSERT INTO task SET id_project = 3, status = false, title = 'Выполнить тестовое задание', deadline = '25.12.2018'; /* id = 2 */
@@ -23,6 +31,11 @@ INSERT INTO task SET id_project = 2, status = true, title = 'Сделать за
 INSERT INTO task SET id_project = 1, status = false, title = 'Встреча с другом', deadline = '16.08.2019'; /* id = 4 */
 INSERT INTO task SET id_project = 4, status = false, title = 'Купить корм для кота'; /* id = 5 */
 INSERT INTO task SET id_project = 4, status = false, title = 'Заказать пиццу'; /* id = 6 */
+
+/* Создание индекса для id_project */
+CREATE INDEX id_project ON task(id_project);
+/* Создание индекса для title */
+CREATE INDEX title ON task(title);
 
 /* Выборка всех проектов для пользователя c id = 1 */
 select project_name from project where id_user = 1;
@@ -50,3 +63,6 @@ update task set status = true where id = 2;
 
 /* Обновили название задачи с id = 4 */
 update task set title = 'Новое название задачи' where id = 4;
+
+/* Пересоздание индекса после обновления title */
+CREATE INDEX title ON task(title);
