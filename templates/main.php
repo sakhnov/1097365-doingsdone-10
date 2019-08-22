@@ -5,8 +5,8 @@
         <ul class="main-navigation__list">
             <?php foreach ($main_list as $value): ?>
                 <li class="main-navigation__list-item">
-                    <a class="main-navigation__list-item-link" href="#"><?= htmlspecialchars($value); ?></a>
-                    <span class="main-navigation__list-item-count"><?= htmlspecialchars(tasksCount($tasks, $value)); ?></span>
+                    <a class="main-navigation__list-item-link" href="#"><?= htmlspecialchars($value['project_name']); ?></a>
+                    <span class="main-navigation__list-item-count"><?= htmlspecialchars($value['count_task']); ?></span>
                 </li>
             <?php endforeach; ?>
         </ul>
@@ -45,15 +45,15 @@
         <!--показывать следующий тег <tr/>, если переменная $show_complete_tasks равна единице-->
 
         <?php foreach ($tasks as $value): ?>
-            <?php if ($value['done'] == 'Да' && $show_complete_tasks == 0) {
+            <?php if ($value['status'] == true && $show_complete_tasks == 0) {
                 continue;
             } ?>
 
-            <tr class="tasks__item task <?= ($value['done'] == 'Да') ? 'task--completed' : ''; ?> <?= isDeadlineClose(htmlspecialchars($value['deadline'])) ? 'task--important' : ''; ?>">
+            <tr class="tasks__item task <?= ($value['status'] == true) ? 'task--completed' : ''; ?> <?= isDeadlineClose(htmlspecialchars($value['deadline'])) ? 'task--important' : ''; ?>">
                 <td class="task__select">
                     <label class="checkbox task__checkbox">
                         <input class="checkbox__input visually-hidden" type="checkbox" >
-                        <span class="checkbox__text"><?= htmlspecialchars($value['name']); ?></span>
+                        <span class="checkbox__text"><?= htmlspecialchars($value['title']); ?></span>
                     </label>
                 </td>
                 <td class="task__date"><?= htmlspecialchars($value['deadline']); ?></td>

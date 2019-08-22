@@ -34,16 +34,16 @@ select project_name from project where id_user = 2;
 select task.id, id_project, create_task, status, title, file, deadline from task join project on id_project = project.id where project.id_user = 1 and project.id = 1;
 
 /* Выборка всех задач для пользователя c id = 1 и с проектом у которого id = 2 */
-select task.id, id_project, create_task, status, title, file, deadline from task join project on id_project = project.id where project.id_user = 1 and project.id = 1;
+select task.id, id_project, create_task, status, title, file, deadline from task join project on id_project = project.id where project.id_user = 1 and project.id = 2;
 
 /* Выборка всех задач для пользователя c id = 1 и с проектом у которого id = 3 */
-select task.id, id_project, create_task, status, title, file, deadline from task join project on id_project = project.id where project.id_user = 1 and project.id = 1;
+select task.id, id_project, create_task, status, title, file, deadline from task join project on id_project = project.id where project.id_user = 1 and project.id = 3;
 
 /* Выборка всех задач для пользователя c id = 1 и с проектом у которого id = 4 */
-select task.id, id_project, create_task, status, title, file, deadline from task join project on id_project = project.id where project.id_user = 1 and project.id = 1;
+select task.id, id_project, create_task, status, title, file, deadline from task join project on id_project = project.id where project.id_user = 1 and project.id = 4;
 
 /* Выборка всех задач для пользователя c id = 1 и с проектом у которого id = 5 */
-select task.id, id_project, create_task, status, title, file, deadline from task join project on id_project = project.id where project.id_user = 1 and project.id = 1;
+select task.id, id_project, create_task, status, title, file, deadline from task join project on id_project = project.id where project.id_user = 1 and project.id = 5;
 
 /* Установили для задачи с id = 2, что задача выполнена (status = true) */
 update task set status = true where id = 2;
