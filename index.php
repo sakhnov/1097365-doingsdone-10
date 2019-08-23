@@ -44,29 +44,43 @@ $tasks = [
 	]
 ];
 
-// Задаем id текущего пользователя
-$user = 1;
+/**
+* Функция queryProject - выбирает проекты пользователя
+*
+* @param int $user id пользователя, чьи проекты необходимо выбрать
+* @return array 
+*/
 
-// Подключение к Базе Данных
-$conn = mysqli_connect('localhost', 'root', '', '1097365-doingsdone-10');
+function queryProject(int $user):array {
 
-if ($conn == false) {
-    echo 'Ошибка подключения: ' . mysqli_connect_error();
-} else {
-
-    // Выбираем все проекты пользователя с id = $user и подсчитываем кол-во задач в проектах
-    $query_project = 'select count(task.id) AS count_task, project.project_name from project left join task on id_project = project.id where project.id_user = ' . $user . ' group by project.project_name';
+	$query_project = 'select count(task.id) AS count_task, project.project_name from project left join task on id_project = project.id where project.id_user = ' . $user . ' group by project.project_name';
     $result_project = mysqli_query($conn, $query_project);
     if ($result_project) {
         $result_project = mysqli_fetch_all($result_project, MYSQLI_ASSOC);
     }
-    // Выбираем все задачи пользователя с id = $user
+
+    return $result_project;
+}
+
+
+/**
+* Функция queryTask - выбирает задачи пользователя
+*
+* @param int $user id пользователя, чьи задачи необходимо выбрать
+* @return array 
+*/
+
+function queryTask(int $user):array {
+
     $query_task = 'select id_project, create_task, status, title, file, deadline from task join project on id_project = project.id where project.id_user = ' . $user;
     $result_task = mysqli_query($conn, $query_task);
     if ($result_task) {
         $result_task = mysqli_fetch_all($result_task, MYSQLI_ASSOC);
     }
+
+    return $result_task;
 }
+
 
 
 /**
@@ -88,6 +102,7 @@ function tasksCount(array $tasks_list, string $nametask): int  {
     return $i;
 }
 
+
 /**
 * Функция isDeadlineClose - определяет осталось ли до дедлайна меньше суток
 *
@@ -100,12 +115,32 @@ function isDeadlineClose(string $deadline): bool {
 	return ($deadline && (floor(time() - strtotime($deadline)) <= 24*60*60));
 }
 
-
+// Задаем id текущего пользователя
+$user = 1;
 $title = 'Список задач - Дела в Порядке';
 $username = 'Дмитрий';
 
-$content = include_template( 'main.php', ['main_list' => $result_project, 'tasks' => $result_task, 'show_complete_tasks' => $show_complete_tasks] );
-echo include_template('layout.php', ['content' => $content, 'title' => $title, 'username' => $username]);
+
+// Подключение к Базе Данных
+$conn = mysqli_connect('localhost', 'root', '', '1097365-doingsdone-10');
+
+if ($conn == false) {
+    echo 'Ошибка подключения: ' . mysqli_connect_error();
+} else {
+
+    // Выбираем все проекты пользователя с id = $user и подсчитываем кол-во задач в проектах
+	//	$result_project = queryProject($user);
+
+    // Выбираем все задачи пользователя с id = $user
+    // $result_task = queryTask($user);
+
+	$content = include_template( 'main.php', ['main_list' => queryProject($user), 'tasks' => queryTask($user), 'show_complete_tasks' => $show_complete_tasks] );
+	echo include_template('layout.php', ['content' => $content, 'title' => $title, 'username' => $username]);
+
+}
+
+
+
 ?>
 
 
