@@ -4,8 +4,8 @@
     <nav class="main-navigation">
         <ul class="main-navigation__list">
             <?php foreach ($main_list as $value): ?>
-                <li class="main-navigation__list-item">
-                    <a class="main-navigation__list-item-link" href="#"><?= htmlspecialchars($value['project_name']); ?></a>
+                <li class="main-navigation__list-item <?= ($_GET["project"] == $value['id']) ? 'main-navigation__list-item--active' : ''; ?>">
+                    <a class="main-navigation__list-item-link" href="/?project=<?= $value['id']; ?>"><?= htmlspecialchars($value['project_name']); ?></a>
                     <span class="main-navigation__list-item-count"><?= htmlspecialchars($value['count_task']); ?></span>
                 </li>
             <?php endforeach; ?>
