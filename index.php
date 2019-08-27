@@ -19,11 +19,11 @@ if ($conn == false) {
 
 } else {
 
-    if (isset($_GET["project"]) && is_numeric($_GET["project"]) && isProject($conn, $_GET["project"], $user)) {
-        $id_project = $_GET["project"];
-        $content = include_template( 'main.php', ['main_list' => queryProject($conn, $user), 'tasks' => queryTask($conn, $user, $id_project), 'show_complete_tasks' => $show_complete_tasks] );
+    if (isset($_GET["project"]) && is_numeric($_GET["project"]) && isUserProject($conn, $_GET["project"], $user)) {
+        $idProject = $_GET["project"];
+        $content = include_template( 'main.php', ['main_list' => getProjects($conn, $user), 'tasks' => getTaskProject($conn, $user, $idProject), 'show_complete_tasks' => $show_complete_tasks] );
     } elseif (!isset($_GET['project']))  {
-        $content = include_template( 'main.php', ['main_list' => queryProject($conn, $user), 'tasks' => queryTask($conn, $user), 'show_complete_tasks' => $show_complete_tasks] );
+        $content = include_template( 'main.php', ['main_list' => getProjects($conn, $user), 'tasks' => getTasks($conn, $user), 'show_complete_tasks' => $show_complete_tasks] );
     } else {
         http_response_code(404);
         die();
