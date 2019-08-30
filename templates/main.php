@@ -13,7 +13,7 @@
     </nav>
 
     <a class="button button--transparent button--plus content__side-button"
-       href="pages/form-project.html" target="project_add">Добавить проект</a>
+       href="/pages/form-project.html" target="project_add">Добавить проект</a>
 </section>
 
 <main class="content__main">
@@ -53,7 +53,7 @@
                 <td class="task__select">
                     <label class="checkbox task__checkbox">
                         <input class="checkbox__input visually-hidden" type="checkbox" >
-                        <span class="checkbox__text"><?= htmlspecialchars($value['title']); ?></span>
+                        <span class="checkbox__text"><?= htmlspecialchars($value['title']); ?> <?= ($value['file']) ? '(<a href="'.$value['file'].'">file</a>)' : ''; ?></span>
                     </label>
                 </td>
                 <td class="task__date"><?= htmlspecialchars($value['deadline']); ?></td>
