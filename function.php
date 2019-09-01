@@ -89,7 +89,7 @@ function isUserProject(mysqli $conn, int $idProject, int $user): bool {
 
 function isDeadlineClose(string $deadline): bool {
 
-    return ($deadline && (floor(time() - strtotime($deadline)) <= 24*60*60));
+    return ($deadline && (floor(strtotime($deadline) - time()) <= 24*60*60));
 }
 
 
@@ -102,7 +102,8 @@ function getPostVal($name) {
 /**
  * Функция errorsForm - валидация формы
  *
- * @param int $post массив $_POST передаваемый из формы
+ * @param mysqli $conn подключение к БД
+ * @param array $post массив $_POST передаваемый из формы
  * @param int $user id пользователя, чьи задачи необходимо выбрать
  * @return array
  */
@@ -110,25 +111,58 @@ function getPostVal($name) {
 function errorsForm(mysqli $conn, array $post, int $user): array {
 
     $errors = [];
+    if (!$post) { return $errors; }
 
-    if (empty($_POST['name'])) {
+    if (empty($post['name'])) {
         $errors['name'] = 'Напишите название задачи';
     }
 
-    if (empty($_POST['date'])) {
+    if (empty($post['date'])) {
         $errors['date'] = 'Выберите дату выполнения ';
-    } elseif (!is_date_valid ($_POST['date'])) {
+    } elseif (!is_date_valid ($post['date'])) {
         $errors['date'] = 'Не верный формат даты';
-    } elseif ($_POST['date'] < date("Y-m-d")) {
+    } elseif ($post['date'] < date("Y-m-d")) {
         $errors['date'] = 'Дата выполнения должна быть из будущего';
     }
 
-    if (empty($_POST['project'])) {
+    if (empty($post['project'])) {
         $errors['project'] = 'Выберите проект';
     }
-    if (!isUserProject($conn, intval($_POST['project']), $user)) {
+    if (!isUserProject($conn, intval($post['project']), $user)) {
         $errors['project'] = 'Выберите проект из выпадающего списка';
     }
 
     return $errors;
+}
+
+/**
+ * Функция addTask - Добавление задачи в БД
+ *
+ * @param mysqli $conn подключение к БД
+ * @param int $taskProject id  проекта куда надо добавить задачу
+ * @param string $taskName id название задачи
+ * @param string $taskDate id дата выполнения задачи
+ * @param string $file_url путь к файлу, если файл добавлен.
+ * @return boolean
+ */
+
+function addTask(mysqli $conn, int $taskProject, string $taskName, string $taskDate, array $file): bool {
+
+    $file_url = false;
+    if (!empty($file['file']['name'])) {
+        $file_name = $file['file']['name'];
+        $file_path = __DIR__ . '/';
+        $file_url = '/' . $file_name;
+        move_uploaded_file($file['file']['tmp_name'], $file_path . $file_name);
+    }
+
+    if ($file_url) {
+        $sql = "INSERT INTO task SET id_project = ?, status = false, title = ?, deadline = ?, file = ?";
+        $stmt = db_get_prepare_stmt($conn, $sql, array($taskProject, $taskName, $taskDate, $file_url));
+    } else {
+        $sql = "INSERT INTO task SET id_project = ?, status = false, title = ?, deadline = ?";
+        $stmt = db_get_prepare_stmt($conn, $sql, array($taskProject, $taskName, $taskDate));
+    }
+
+    return mysqli_stmt_execute($stmt);;
 }

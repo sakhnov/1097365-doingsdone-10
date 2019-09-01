@@ -19,41 +19,25 @@ if ($conn == false) {
 
 } else {
 
-    if ($_POST) {
-        $errors = errorsForm($conn, $_POST, $user);
+        if ($_POST) {
+            $errors = errorsForm($conn, $_POST, $user);
 
-        if (count($errors)) {
-            echo include_template('form-task.php', ['main_list' => getProjects($conn, $user), 'title' => $title, 'username' => $username, 'errors' => $errors]);
+            if (count($errors)) {
+                $content =  include_template('form-task.php', ['main_list' => getProjects($conn, $user), 'title' => $title, 'username' => $username, 'errors' => $errors]);
+            } else {
+                $taskName = mysqli_real_escape_string($conn, $_POST['name']);
+                $taskProject = intval($_POST['project']);
+                $taskDate = $_POST['date'];
+
+                addTask($conn, $taskProject, $taskName, $taskDate, $_FILES);
+                header('Location: /');
+            }
         } else {
 
-            $taskName = mysqli_real_escape_string($conn, $_POST['name']);
-            $taskProject = intval($_POST['project']);
-            $taskDate = $_POST['date'];
-
-            if (isset($_FILES['file'])) {
-                $file_name = $_FILES['file']['name'];
-                $file_path =__DIR__ . '/';
-                $file_url = '/' . $file_name;
-                move_uploaded_file($_FILES['file']['tmp_name'], $file_path . $file_name);
-
-                $sql = "INSERT INTO task SET id_project = ?, status = false, title = ?, deadline = ?, file = ?";
-                $stmt = db_get_prepare_stmt($conn, $sql, array($taskProject, $taskName, $taskDate, $file_url));
-            } else {
-                $sql = "INSERT INTO task SET id_project = ?, status = false, title = ?, deadline = ?";
-                $stmt = db_get_prepare_stmt($conn, $sql, array($taskProject, $taskName, $taskDate));
-
-            }
-
-            mysqli_stmt_execute($stmt);
-            $res = mysqli_stmt_get_result($stmt);
-            header('Location: http://1097365-doingsdone-10/');
+            $content =  include_template('form-task.php', ['main_list' => getProjects($conn, $user), 'title' => $title, 'username' => $username]);
         }
-    } else {
-        echo include_template('form-task.php', ['main_list' => getProjects($conn, $user), 'title' => $title, 'username' => $username]);
-    }
 }
 
-
-
+echo include_template('layout.php', ['main_list' => getProjects($conn, $user), 'content' => $content, 'title' => $title, 'username' => $username]);
 
 ?>

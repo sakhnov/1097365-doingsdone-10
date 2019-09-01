@@ -29,7 +29,7 @@ if ($conn == false) {
         die();
     }
 
-	echo include_template('layout.php', ['content' => $content, 'title' => $title, 'username' => $username]);
+	echo include_template('layout.php', ['main_list' => getProjects($conn, $user), 'content' => $content, 'title' => $title, 'username' => $username]);
 
 }
 
