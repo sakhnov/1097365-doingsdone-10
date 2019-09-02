@@ -19,8 +19,17 @@ if ($conn == false) {
 
 } else {
 
-	$content = include_template( 'main.php', ['main_list' => queryProject($conn, $user), 'tasks' => queryTask($conn, $user), 'show_complete_tasks' => $show_complete_tasks] );
-	echo include_template('layout.php', ['content' => $content, 'title' => $title, 'username' => $username]);
+    if (isset($_GET["project"]) && is_numeric($_GET["project"]) && isUserProject($conn, $_GET["project"], $user)) {
+        $idProject = $_GET["project"];
+        $content = include_template( 'main.php', ['main_list' => getProjects($conn, $user), 'tasks' => getTaskProject($conn, $user, $idProject), 'show_complete_tasks' => $show_complete_tasks] );
+    } elseif (!isset($_GET['project']))  {
+        $content = include_template( 'main.php', ['main_list' => getProjects($conn, $user), 'tasks' => getTasks($conn, $user), 'show_complete_tasks' => $show_complete_tasks] );
+    } else {
+        http_response_code(404);
+        die();
+    }
+
+	echo include_template('layout.php', ['main_list' => getProjects($conn, $user), 'content' => $content, 'title' => $title, 'username' => $username]);
 
 }
 
