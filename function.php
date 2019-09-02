@@ -100,7 +100,7 @@ function getPostVal($name) {
 
 
 /**
- * Функция errorsForm - валидация формы
+ * Функция errorsFormTask - валидация формы создания задачи
  *
  * @param mysqli $conn подключение к БД
  * @param array $post массив $_POST передаваемый из формы
@@ -108,7 +108,7 @@ function getPostVal($name) {
  * @return array
  */
 
-function errorsForm(mysqli $conn, array $post, int $user): array {
+function errorsFormTask(mysqli $conn, array $post, int $user): array {
 
     $errors = [];
     if (!$post) { return $errors; }
@@ -117,12 +117,13 @@ function errorsForm(mysqli $conn, array $post, int $user): array {
         $errors['name'] = 'Напишите название задачи';
     }
 
-    if (empty($post['date'])) {
-        $errors['date'] = 'Выберите дату выполнения ';
-    } elseif (!is_date_valid ($post['date'])) {
-        $errors['date'] = 'Не верный формат даты';
-    } elseif ($post['date'] < date("Y-m-d")) {
-        $errors['date'] = 'Дата выполнения должна быть из будущего';
+    if (!empty($post['date'])) {
+
+        if (!is_date_valid($post['date'])) {
+            $errors['date'] = 'Не верный формат даты';
+        } elseif ($post['date'] < date("Y-m-d")) {
+            $errors['date'] = 'Дата выполнения должна быть из будущего';
+        }
     }
 
     if (empty($post['project'])) {
@@ -163,6 +164,77 @@ function addTask(mysqli $conn, int $taskProject, string $taskName, string $taskD
         $sql = "INSERT INTO task SET id_project = ?, status = false, title = ?, deadline = ?";
         $stmt = db_get_prepare_stmt($conn, $sql, array($taskProject, $taskName, $taskDate));
     }
+
+    return mysqli_stmt_execute($stmt);;
+}
+
+
+/**
+ * Функция errorsFormRegister - валидация формы создания задачи
+ *
+ * @param mysqli $conn подключение к БД
+ * @param array $post массив $_POST передаваемый из формы
+ * @param int $user id пользователя, чьи задачи необходимо выбрать
+ * @return array
+ */
+
+function errorsFormRegister(mysqli $conn, array $post): array {
+
+    $errors = [];
+    if (!$post) { return $errors; }
+
+    if (empty($post['name'])) {
+        $errors['name'] = 'Напишите ваше имя';
+    }
+
+    if (empty($post['email'])) {
+        $errors['email'] = 'Введите Email';
+    } elseif (!filter_var($post['email'], FILTER_VALIDATE_EMAIL)){
+        $errors['email'] = 'Введите корректный Email';
+    } elseif (checkUserEmail($conn, $post['email'])) {
+        $errors['email'] = 'Email уже существует!';
+    }
+
+    if (empty($post['password'])) {
+        $errors['password'] = 'Придумайте пароль';
+    }
+
+    return $errors;
+}
+
+/**
+ * Функция checkUserEmail - Проверка email на существование в базе
+ *
+ * @param mysqli $conn подключение к БД
+ * @param string $email регистрируемый email пользователя
+ * @return boolean
+ */
+function checkUserEmail(mysqli $conn, string $email): bool  {
+
+    $sql = 'SELECT count(*) FROM user WHERE email = "' . $email .'"';
+    $result1 = mysqli_query($conn, $sql);
+
+    if ($result1) {
+        $result = mysqli_fetch_all($result1, MYSQLI_NUM);
+    }
+
+    return $result[0][0];
+}
+
+/**
+ * Функция addUser - Регистрация пользователя
+ *
+ * @param mysqli $conn подключение к БД
+ * @param string $userName Имя пользователя
+ * @param string $userEmail Email пользователя
+ * @param string $userPassword пароль
+ * @return boolean
+ */
+
+function addUser(mysqli $conn, string $userName, string $userEmail, string $userPassword): bool {
+
+        $sql = "INSERT INTO user SET name = ?, email = ?, pass = ?";
+        $stmt = db_get_prepare_stmt($conn, $sql, array($userName, $userEmail, password_hash($userPassword, PASSWORD_DEFAULT)));
 
     return mysqli_stmt_execute($stmt);;
 }

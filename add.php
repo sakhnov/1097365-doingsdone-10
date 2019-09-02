@@ -20,7 +20,7 @@ if ($conn == false) {
 } else {
 
         if ($_POST) {
-            $errors = errorsForm($conn, $_POST, $user);
+            $errors = errorsFormTask($conn, $_POST, $user);
 
             if (count($errors)) {
                 $content =  include_template('form-task.php', ['main_list' => getProjects($conn, $user), 'title' => $title, 'username' => $username, 'errors' => $errors]);
