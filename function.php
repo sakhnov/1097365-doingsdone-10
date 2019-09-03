@@ -151,7 +151,9 @@ function addTask(mysqli $conn, int $taskProject, string $taskName, string $taskD
 
     $file_url = false;
     if (!empty($file['file']['name'])) {
-        $file_name = $file['file']['name'];
+        $pathinfo = pathinfo($file['file']['name']);
+        $extension = $pathinfo['extension'];
+        $file_name = uniqid(). '.' . $extension;
         $file_path = __DIR__ . '/';
         $file_url = '/' . $file_name;
         move_uploaded_file($file['file']['tmp_name'], $file_path . $file_name);
