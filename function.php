@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 /**
  * Функция queryProject - выбирает проекты пользователя
  *
@@ -176,7 +178,6 @@ function addTask(mysqli $conn, int $taskProject, string $taskName, string $taskD
  *
  * @param mysqli $conn подключение к БД
  * @param array $post массив $_POST передаваемый из формы
- * @param int $user id пользователя, чьи задачи необходимо выбрать
  * @return array
  */
 
@@ -239,4 +240,130 @@ function addUser(mysqli $conn, string $userName, string $userEmail, string $user
         $stmt = db_get_prepare_stmt($conn, $sql, array($userName, $userEmail, password_hash($userPassword, PASSWORD_DEFAULT)));
 
     return mysqli_stmt_execute($stmt);;
+}
+
+/**
+ * Функция getUserInfo возвращает данныу текущего пользователя
+ *
+ * @param mysqli $conn
+ * @param int|null $user_id
+ * @return array
+ */
+function getUserInfo(mysqli $conn, int $userId = null):array {
+    $result = [];
+    if (isset($userId) && !empty($userId)) {
+        $sql = 'select id, email, name, pass from user where id = ' . $userId;
+        $resultSql = mysqli_query($conn, $sql);
+        if ($resultSql->num_rows) {
+            $result = mysqli_fetch_array($resultSql, MYSQLI_ASSOC);
+        } 
+    }
+    return $result;
+}
+
+
+/**
+ * Функция errorsFormAuth - валидация формы аутентификации
+ *
+ * @param mysqli $conn подключение к БД
+ * @param array $post массив $_POST передаваемый из формы
+ * @return array
+ */
+
+function errorsFormAuth(mysqli $conn, array $post): array {
+
+    $errors = [];
+    if (!$post) { return $errors; }
+
+    if (empty($post['email'])) {
+        $errors['email'] = 'Введите Email';
+    } elseif (!filter_var($post['email'], FILTER_VALIDATE_EMAIL)){
+        $errors['email'] = 'Введите корректный Email';
+    }
+
+    if (empty($post['password'])) {
+        $errors['password'] = 'Не верный пароль';
+    }
+
+    return $errors;
+}
+
+/**
+ * Функция userAuth авторизация пользователя
+ *
+ * @param mysqli $conn
+ * @param string $userFormEmail введеный Email
+ * @param string $userFormPass введеный пароль
+ * @return boolean
+ */
+function userAuth($conn, string $userFormEmail, string $userFormPass): bool {
+
+        $sql = 'select id, pass from user where email = "' . $userFormEmail . '"';
+        $result = mysqli_query($conn, $sql);
+        if ($result->num_rows) {
+            $result = mysqli_fetch_array($result, MYSQLI_ASSOC);
+            if (password_verify($userFormPass, $result['pass'])) {
+                $_SESSION['userId'] = $result['id'];
+
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+
+            return false;
+        }
+}
+
+
+/**
+ * Функция errorsFormProject - валидация формы добавления проекта
+ *
+ * @param mysqli $conn подключение к БД
+ * @param array $post массив $_POST передаваемый из формы
+ * @return array
+ */
+
+function errorsFormProject(mysqli $conn, array $post): array {
+
+    $errors = [];
+    if (!$post) { return $errors; }
+
+    if (empty($post['name'])) {
+        $errors['name'] = 'Введите название проекта';
+    }
+
+    return $errors;
+}
+
+/**
+ * Функция addProject - Добавление задачи в БД
+ *
+ * @param mysqli $conn подключение к БД
+ * @param string $projectName название проекта
+ * @param int $userId id пользователя который добавляет проект
+ * @return boolean
+ */
+
+function addProject(mysqli $conn, string $projectName, int $userId): bool {
+
+
+    $sql = "INSERT INTO project SET project_name = ?, id_user = ?";
+    $stmt = db_get_prepare_stmt($conn, $sql, array($projectName, $userId));
+
+    return mysqli_stmt_execute($stmt);
+}
+
+
+/**
+ * Функция logoutUser - Выход из учетной записи. Разлогинивание пользователя.
+ */
+
+function logoutUser() {
+    
+    if (isset($_SESSION['userId']) && !empty($_SESSION['userId'])) {
+            $_SESSION['userId'] = null;
+            header('Location: /');
+    }        
+
 }

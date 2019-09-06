@@ -23,21 +23,19 @@ if ($conn == false) {
         if (!$userInfo) { header('Location: /'); }
 
         if ($_POST) {
-            $errors = errorsFormTask($conn, $_POST, intval($userInfo['id']));
+            $errors = errorsFormProject($conn, $_POST, intval($userInfo['id']));
 
             if (count($errors)) {
-                $content =  include_template('form-task.php', ['main_list' => getProjects($conn, intval($userInfo['id'])), 'title' => $title, 'errors' => $errors]);
+                $content =  include_template('form-project.php', ['main_list' => getProjects($conn, intval($userInfo['id'])), 'title' => $title, 'errors' => $errors]);
             } else {
-                $taskName = mysqli_real_escape_string($conn, $_POST['name']);
-                $taskProject = intval($_POST['project']);
-                $taskDate = $_POST['date'];
+                $projectName = mysqli_real_escape_string($conn, $_POST['name']);
 
-                addTask($conn, $taskProject, $taskName, $taskDate, $_FILES);
-                header('Location: /');
+                addProject($conn, $projectName, intval($userInfo['id']));
+                $content =  include_template('form-project.php', ['main_list' => getProjects($conn, intval($userInfo['id'])), 'title' => $title ]);
             }
         } else {
 
-            $content =  include_template('form-task.php', ['main_list' => getProjects($conn, intval($userInfo['id'])), 'title' => $title ]);
+            $content =  include_template('form-project.php', ['main_list' => getProjects($conn, intval($userInfo['id'])), 'title' => $title ]);
         }
 }
 
