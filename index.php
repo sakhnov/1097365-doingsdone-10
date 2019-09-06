@@ -2,13 +2,10 @@
 include_once ('helpers.php');
 include_once ('function.php');
 // показывать или нет выполненные задачи
-$show_complete_tasks = rand(0, 1);
+//$show_complete_tasks = rand(0, 1);
 
-// Задаем id текущего пользователя
 
 $title = 'Список задач - Дела в Порядке';
-$username = 'Дмитрий';
-
 
 // Подключение к Базе Данных
 $conn = mysqli_connect('localhost', 'root', '', '1097365-doingsdone-10');
@@ -23,15 +20,32 @@ if ($conn == false) {
 
     if ($userInfo) {
 
+        $show_complete_tasks = 0;
+        if ($_GET['show_completed']) {
+            $show_complete_tasks = 1;
+        }
+
+        if ($_GET['complete_task'] == 1 && $_GET['task_id']) {
+           compliteTask($conn, intval($_GET['task_id']));
+        } elseif ($_GET['complete_task'] == 0 && $_GET['task_id']) {
+           uncompliteTask($conn, $_GET['task_id']);
+        }
+
+        if ($_GET['delete_task']) {
+            deleteTask($conn, intval($_GET['delete_task']));
+        }
+
+
         if (isset($_GET["project"]) && is_numeric($_GET["project"]) && isUserProject($conn, $_GET["project"], intval($userInfo['id']))) {
             $idProject = $_GET["project"];
             $content = include_template( 'main.php', ['main_list' => getProjects($conn, intval($userInfo['id'])), 'tasks' => getTaskProject($conn, intval($userInfo['id']), $idProject), 'show_complete_tasks' => $show_complete_tasks, 'userInfo' => $userInfo]);
         } elseif (!isset($_GET['project']))  {
-            $content = include_template( 'main.php', ['main_list' => getProjects($conn, intval($userInfo['id'])), 'tasks' => getTasks($conn, intval($userInfo['id'])), 'show_complete_tasks' => $show_complete_tasks, 'userInfo' => $userInfo] );
+            $content = include_template( 'main.php', ['main_list' => getProjects($conn, intval($userInfo['id'])), 'tasks' => getTasks($conn, intval($userInfo['id']), $_GET['show_tasks']), 'show_complete_tasks' => $show_complete_tasks, 'userInfo' => $userInfo] );
         } else {
             http_response_code(404);
             die();
         }
+
         echo include_template('layout.php', ['main_list' => getProjects($conn, intval($userInfo['id'])), 'content' => $content, 'title' => $title, 'userInfo' => $userInfo]);
 
     } else {

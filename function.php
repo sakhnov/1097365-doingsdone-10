@@ -24,12 +24,26 @@ function getProjects(mysqli $conn, int $user):array {
  * Функция queryTask - выбирает задачи пользователя
  *
  * @param int $user id пользователя, чьи задачи необходимо выбрать
+ * @param string $showTask для вЫборки задач
  * @return array
  */
 
-function getTasks(mysqli $conn, int $user):array {
+function getTasks(mysqli $conn, int $user, string $showTask = null): array {
 
-    $queryTask = 'select id_project, create_task, status, title, file, deadline from task join project on id_project = project.id where project.id_user = ' . $user;
+    switch ($showTask) {
+        case 'today':
+            $queryTask = 'select task.id, id_project, create_task, status, title, file, deadline from task join project on id_project = project.id where project.id_user = ' . $user . ' and STR_TO_DATE(deadline, "%Y-%m-%d") = CURDATE()';
+            break;
+        case 'tomorrow':
+            $queryTask = 'select task.id, id_project, create_task, status, title, file, deadline from task join project on id_project = project.id where project.id_user = ' . $user . ' and STR_TO_DATE(deadline, "%Y-%m-%d") = CURDATE() + INTERVAL 1 DAY';
+            break;
+        case 'overdue':
+            $queryTask = 'select task.id, id_project, create_task, status, title, file, deadline from task join project on id_project = project.id where project.id_user = ' . $user . ' and STR_TO_DATE(deadline, "%Y-%m-%d") < CURDATE()';
+            break;
+        default:
+            $queryTask = 'select task.id, id_project, create_task, status, title, file, deadline from task join project on id_project = project.id where project.id_user = ' . $user;
+            break;
+    }
 
     $resultTask = mysqli_query($conn, $queryTask);
     if ($resultTask) {
@@ -49,7 +63,7 @@ function getTasks(mysqli $conn, int $user):array {
 
 function getTaskProject(mysqli $conn, int $user, int $idProject):array {
 
-    $queryTask = 'select id_project, create_task, status, title, file, deadline from task join project on id_project = project.id where project.id_user = ' . $user . ' and project.id = ' . $idProject;
+    $queryTask = 'select task.id, id_project, create_task, status, title, file, deadline from task join project on id_project = project.id where project.id_user = ' . $user . ' and project.id = ' . $idProject;
 
     $resultTask = mysqli_query($conn, $queryTask);
     if ($resultTask) {
@@ -256,7 +270,7 @@ function getUserInfo(mysqli $conn, int $userId = null):array {
         $resultSql = mysqli_query($conn, $sql);
         if ($resultSql->num_rows) {
             $result = mysqli_fetch_array($resultSql, MYSQLI_ASSOC);
-        } 
+        }
     }
     return $result;
 }
@@ -360,10 +374,54 @@ function addProject(mysqli $conn, string $projectName, int $userId): bool {
  */
 
 function logoutUser() {
-    
+
     if (isset($_SESSION['userId']) && !empty($_SESSION['userId'])) {
             $_SESSION['userId'] = null;
             header('Location: /');
-    }        
+    }
 
+}
+
+/**
+ * Функция compliteTask - Выставляет статус задачи - выполнена
+ *
+ * @param mysqli $conn подключение к БД
+ * @param int $taskId id задачи
+ * @return boolean
+ */
+function compliteTask(mysqli $conn, int $taskId): bool {
+
+    $sql = "UPDATE task SET status = ? WHERE id = ?";
+    $stmt = db_get_prepare_stmt($conn, $sql, array('1', $taskId));
+
+    return mysqli_stmt_execute($stmt);
+}
+
+/**
+ * Функция uncompliteTask - Выставляет статус задачи - не выполнена
+ *
+ * @param mysqli $conn подключение к БД
+ * @param int $taskId id задачи
+ * @return boolean
+ */
+function uncompliteTask(mysqli $conn, int $taskId): bool {
+
+    $sql = "UPDATE task SET status = ? WHERE id = ?";
+    $stmt = db_get_prepare_stmt($conn, $sql, array('0', $taskId));
+
+    return mysqli_stmt_execute($stmt);
+}
+
+/**
+ * Функция deleteTask - Удаляет задачу
+ *
+ * @param mysqli $conn подключение к БД
+ * @param int $taskId id задачи
+ * @return boolean
+ */
+function deleteTask(mysqli $conn, int $taskId): bool {
+    $sql = "DELETE FROM task WHERE id = ?";
+    $stmt = db_get_prepare_stmt($conn, $sql, array($taskId));
+
+    return mysqli_stmt_execute($stmt);
 }
