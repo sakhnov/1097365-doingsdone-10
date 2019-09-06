@@ -1,5 +1,5 @@
 <?php
-session_start();
+
 
 /**
  * Функция queryProject - выбирает проекты пользователя
@@ -249,16 +249,14 @@ function addUser(mysqli $conn, string $userName, string $userEmail, string $user
  * @param int|null $user_id
  * @return array
  */
-function getUserInfo(mysqli $conn, int $user_id = null):array {
+function getUserInfo(mysqli $conn, int $userId = null):array {
     $result = [];
-    if (isset($user_id) && !empty($user_id)) {
-        $sql = 'select id, email, name, pass from user where id = ' . $user_id;
-        $result = mysqli_query($conn, $sql);
-        if ($result->num_rows) {
-            $result = mysqli_fetch_array($result, MYSQLI_ASSOC);
-        } else {
-            $result = [];
-        }
+    if (isset($userId) && !empty($userId)) {
+        $sql = 'select id, email, name, pass from user where id = ' . $userId;
+        $resultSql = mysqli_query($conn, $sql);
+        if ($resultSql->num_rows) {
+            $result = mysqli_fetch_array($resultSql, MYSQLI_ASSOC);
+        } 
     }
     return $result;
 }
@@ -315,4 +313,57 @@ function userAuth($conn, string $userFormEmail, string $userFormPass): bool {
 
             return false;
         }
+}
+
+
+/**
+ * Функция errorsFormProject - валидация формы добавления проекта
+ *
+ * @param mysqli $conn подключение к БД
+ * @param array $post массив $_POST передаваемый из формы
+ * @return array
+ */
+
+function errorsFormProject(mysqli $conn, array $post): array {
+
+    $errors = [];
+    if (!$post) { return $errors; }
+
+    if (empty($post['name'])) {
+        $errors['name'] = 'Введите название проекта';
+    }
+
+    return $errors;
+}
+
+/**
+ * Функция addProject - Добавление задачи в БД
+ *
+ * @param mysqli $conn подключение к БД
+ * @param string $projectName название проекта
+ * @param int $userId id пользователя который добавляет проект
+ * @return boolean
+ */
+
+function addProject(mysqli $conn, string $projectName, int $userId): bool {
+
+
+    $sql = "INSERT INTO project SET project_name = ?, id_user = ?";
+    $stmt = db_get_prepare_stmt($conn, $sql, array($projectName, $userId));
+
+    return mysqli_stmt_execute($stmt);
+}
+
+
+/**
+ * Функция logoutUser - Выход из учетной записи. Разлогинивание пользователя.
+ */
+
+function logoutUser() {
+    
+    if (isset($_SESSION['userId']) && !empty($_SESSION['userId'])) {
+            $_SESSION['userId'] = null;
+            header('Location: /');
+    }        
+
 }
