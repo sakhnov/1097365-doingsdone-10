@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 
 /**
  * Функция queryProject - выбирает проекты пользователя

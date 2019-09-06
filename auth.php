@@ -1,5 +1,4 @@
 <?php
-session_start();
 include_once ('helpers.php');
 include_once ('function.php');
 // показывать или нет выполненные задачи
