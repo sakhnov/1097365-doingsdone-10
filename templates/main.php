@@ -1,7 +1,7 @@
 <main class="content__main">
     <h2 class="content__main-heading">Список задач</h2>
 
-    <form class="search-form" action="index.php" method="post" autocomplete="off">
+    <form class="search-form" action="" method="post" autocomplete="off">
         <input class="search-form__input" type="text" name="" value="" placeholder="Поиск по задачам">
 
         <input class="search-form__submit" type="submit" name="" value="Искать">
@@ -9,10 +9,10 @@
 
     <div class="tasks-controls">
         <nav class="tasks-switch">
-            <a href="/" class="tasks-switch__item tasks-switch__item--active">Все задачи</a>
-            <a href="/" class="tasks-switch__item">Повестка дня</a>
-            <a href="/" class="tasks-switch__item">Завтра</a>
-            <a href="/" class="tasks-switch__item">Просроченные</a>
+            <a href="/?show_tasks=all" class="tasks-switch__item <?= ((!isset($_GET['show_tasks']) || isset($_GET['show_tasks']) && $_GET['show_tasks'] === 'all')) ? 'tasks-switch__item--active' : ''; ?>">Все задачи</a>
+            <a href="/?show_tasks=today" class="tasks-switch__item <?= (isset($_GET['show_tasks']) && $_GET['show_tasks'] === 'today') ? 'tasks-switch__item--active' : ''; ?>">Повестка дня</a>
+            <a href="/?show_tasks=tomorrow" class="tasks-switch__item <?= (isset($_GET['show_tasks']) && $_GET['show_tasks'] === 'tomorrow') ? 'tasks-switch__item--active' : ''; ?>">Завтра</a>
+            <a href="/?show_tasks=overdue" class="tasks-switch__item <?= (isset($_GET['show_tasks']) && $_GET['show_tasks'] === 'overdue') ? 'tasks-switch__item--active' : ''; ?>">Просроченные</a>
         </nav>
 
         <label class="checkbox">
@@ -39,8 +39,27 @@
                     </label>
                 </td>
                 <td class="task__date"><?= htmlspecialchars($value['deadline']); ?></td>
-                <td class="task__controls"></td>
-            </tr>
+                <td class="task__controls">
+                    <button class="expand-control" type="button" name="button">Дополнительные действия</button>
+                    <ul class="expand-list hidden">
+                        <li class="expand-list__item">
+                            <?php if($value['status']): ?>
+                                <a href="?complete_task=0&task_id=<?=$value['id']?>">
+                                    Отметить как невыполненную
+                                </a>
+                            <?php else: ?>
+                                <a href="?complete_task=1&task_id=<?=$value['id']?>">
+                                    Выполнить
+                                </a>
+                            <?php endif; ?>
+                        </li>
+                        <li class="expand-list__item">
+                            <a href="?delete_task=<?=$value['id']?>">
+                                Удалить
+                            </a>
+                        </li>
+                    </ul>
+                </td>            </tr>
 
         <?php endforeach; ?>
     </table>
