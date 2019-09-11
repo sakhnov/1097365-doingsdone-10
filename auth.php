@@ -1,8 +1,6 @@
 <?php
 include_once ('helpers.php');
 include_once ('function.php');
-// показывать или нет выполненные задачи
-$show_complete_tasks = rand(0, 1);
 
 $title = 'Список задач - Дела в Порядке';
 

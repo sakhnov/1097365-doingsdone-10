@@ -1,9 +1,6 @@
 <?php
 include_once ('helpers.php');
 include_once ('function.php');
-// показывать или нет выполненные задачи
-//$show_complete_tasks = rand(0, 1);
-
 
 $title = 'Список задач - Дела в Порядке';
 
@@ -35,7 +32,6 @@ if ($conn == false) {
             deleteTask($conn, intval($_GET['delete_task']));
         }
 
-
         if (isset($_GET["project"]) && is_numeric($_GET["project"]) && isUserProject($conn, $_GET["project"], intval($userInfo['id']))) {
             $idProject = $_GET["project"];
             $content = include_template( 'main.php', ['main_list' => getProjects($conn, intval($userInfo['id'])), 'tasks' => getTaskProject($conn, intval($userInfo['id']), $idProject), 'show_complete_tasks' => $show_complete_tasks, 'userInfo' => $userInfo]);
@@ -44,6 +40,10 @@ if ($conn == false) {
         } else {
             http_response_code(404);
             die();
+        }
+
+        if ($_GET['q']) {
+            $content = include_template( 'main.php', ['main_list' => getProjects($conn, intval($userInfo['id'])), 'tasks' => getTaskSearch($conn, intval($userInfo['id']), $_GET['q']), 'show_complete_tasks' => $show_complete_tasks, 'userInfo' => $userInfo]);
         }
 
         echo include_template('layout.php', ['main_list' => getProjects($conn, intval($userInfo['id'])), 'content' => $content, 'title' => $title, 'userInfo' => $userInfo]);

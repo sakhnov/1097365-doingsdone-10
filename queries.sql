@@ -52,3 +52,5 @@ update task set status = true where id = 2;
 /* Обновили название задачи с id = 4 */
 update task set title = 'Новое название задачи' where id = 4;
 
+/*Создание полнотекстового индекса для поля title таблицы task*/
+CREATE FULLTEXT INDEX ft_search ON task(title)
