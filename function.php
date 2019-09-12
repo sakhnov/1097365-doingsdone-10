@@ -425,3 +425,35 @@ function deleteTask(mysqli $conn, int $taskId): bool {
 
     return mysqli_stmt_execute($stmt);
 }
+
+/**
+ * Функция getTaskSearch - выбирает задачи в соответствии с поиском
+ *
+ * @param int $user id пользователя, чьи задачи необходимо выбрать
+ * @return array
+ */
+
+function getTaskSearch(mysqli $conn, int $user, string $searchWord):array {
+    $returnTask = [];
+    $queryTask = 'select task.id, id_project, create_task, status, title, file, deadline from task join project on id_project = project.id where project.id_user = ' . $user .' and MATCH(title) AGAINST("' . $searchWord . '")';
+
+    $resultTask = mysqli_query($conn, $queryTask);
+    if ($resultTask) {
+        $returnTask = mysqli_fetch_all($resultTask, MYSQLI_ASSOC);
+    }
+
+    return $returnTask;
+}
+
+/**
+ * Функция clear - очистка ввода от тегов, спецсимволов
+ *
+ * @param string $var строка которую надо очистить
+ * @return array
+ */
+
+function clear(string $var): string {
+$var =  htmlspecialchars(trim(strip_tags($var)), ENT_QUOTES, 'UTF-8');
+
+  return $var;
+}

@@ -43,3 +43,6 @@ CREATE INDEX id_project ON task(id_project);
 
 /* Создание индекса для title.  Выборка и списка задач и возможная сортировка по названию. */
 CREATE INDEX title ON task(title);
+
+/*Создание полнотекстового индекса для поля title таблицы task*/
+CREATE FULLTEXT INDEX ft_search ON task(title);

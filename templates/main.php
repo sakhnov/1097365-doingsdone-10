@@ -1,8 +1,8 @@
 <main class="content__main">
     <h2 class="content__main-heading">Список задач</h2>
 
-    <form class="search-form" action="" method="post" autocomplete="off">
-        <input class="search-form__input" type="text" name="" value="" placeholder="Поиск по задачам">
+    <form class="search-form" action="" method="get" autocomplete="off">
+        <input class="search-form__input" type="text" name="q" value="<?= $searchWord; ?>" placeholder="Поиск по задачам">
 
         <input class="search-form__submit" type="submit" name="" value="Искать">
     </form>
@@ -59,8 +59,11 @@
                             </a>
                         </li>
                     </ul>
-                </td>            </tr>
+                </td>
+            </tr>
 
         <?php endforeach; ?>
+
     </table>
+    <?= ($tasks) ? '' : 'Ничего не найдено по вашему запросу!'; ?>
 </main>
