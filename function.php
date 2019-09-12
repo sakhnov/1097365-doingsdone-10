@@ -444,3 +444,16 @@ function getTaskSearch(mysqli $conn, int $user, string $searchWord):array {
 
     return $returnTask;
 }
+
+/**
+ * Функция clear - очистка ввода от тегов, спецсимволов
+ *
+ * @param string $var строка которую надо очистить
+ * @return array
+ */
+
+function clear(string $var): string {
+$var =  htmlspecialchars(trim(strip_tags($var)), ENT_QUOTES, 'UTF-8');
+
+  return $var;
+}

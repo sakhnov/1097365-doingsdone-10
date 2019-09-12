@@ -43,7 +43,8 @@ if ($conn == false) {
         }
 
         if ($_GET['q']) {
-            $content = include_template( 'main.php', ['main_list' => getProjects($conn, intval($userInfo['id'])), 'tasks' => getTaskSearch($conn, intval($userInfo['id']), $_GET['q']), 'show_complete_tasks' => $show_complete_tasks, 'userInfo' => $userInfo]);
+			$searchWord = clear($_GET['q']);
+            $content = include_template( 'main.php', ['main_list' => getProjects($conn, intval($userInfo['id'])), 'tasks' => getTaskSearch($conn, intval($userInfo['id']), $searchWord), 'show_complete_tasks' => $show_complete_tasks, 'userInfo' => $userInfo, 'searchWord' => $searchWord]);
         }
 
         echo include_template('layout.php', ['main_list' => getProjects($conn, intval($userInfo['id'])), 'content' => $content, 'title' => $title, 'userInfo' => $userInfo]);
