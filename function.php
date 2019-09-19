@@ -457,3 +457,28 @@ $var =  htmlspecialchars(trim(strip_tags($var)), ENT_QUOTES, 'UTF-8');
 
   return $var;
 }
+
+/**
+ * Функция sendemail - отправка писем
+ *
+ * @param string $email email пользователя
+ * @param string $name имя пользователя
+ * @param string $body сообщение.
+ */
+
+function sendemail(string $email, string $name, string $body) {
+
+    $transport = new Swift_SmtpTransport('phpdemo.ru', 25);
+    $transport->setUsername('keks@phpdemo.ru');
+    $transport->setPassword('htmlacademy');
+// Формирование сообщения
+    $message = new Swift_Message("Уведомление от сервиса «Дела в порядке»");
+    $message->setFrom(['keks@phpdemo.ru' => 'John Doe']);
+    $message->setTo([$email => $name]);
+    $message->setBody($body, 'text/plain');
+
+// Отправка сообщения
+    $mailer = new Swift_Mailer($transport);
+    $mailer->send($message);
+
+}
