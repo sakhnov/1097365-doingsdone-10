@@ -23,13 +23,13 @@ if ($conn == false) {
     }
 
     foreach ($resultUser as $valueUser) {
-        $bodyTitle = 'Уважаемый, ' . $valueUser['name'];
+        $bodyTitle = 'Уважаемый, ' . $valueUser['name'] . '! ';
         $bodyContent = '';
         foreach ($resultTask as $value) {
             if ($valueUser['id'] == $value['id']) {
-                $bodyContent .= 'У вас запланирована задача ' . $value['name'] . ' на ' . $value['deadline'];
+                $bodyContent .= 'У вас запланирована задача "' . $value['title'] . '" на ' . $value['deadline'] . '; ';
             }
-         $message = $bodyTitle ."". $bodyContent;
+         $message = $bodyTitle .''. $bodyContent;
         }
         sendemail($valueUser['email'], $valueUser['name'], $message);
     }

@@ -281,7 +281,7 @@ function addUser(mysqli $conn, string $userName, string $userEmail, string $user
         $userEmail = mysqli_real_escape_string($conn, $userEmail);
         $userPassword = mysqli_real_escape_string($conn, $userPassword);
 
-        $sql = "INSERT INTO user SET name = ?, email = ?, pass = ?";
+        $sql = 'INSERT INTO user SET name = ?, email = ?, pass = ?';
         $stmt = db_get_prepare_stmt($conn, $sql, array($userName, $userEmail, password_hash($userPassword, PASSWORD_DEFAULT)));
 
     return mysqli_stmt_execute($stmt);
@@ -406,7 +406,7 @@ function addProject(mysqli $conn, string $projectName, int $userId): bool
 
     $projectName = mysqli_real_escape_string($conn, $projectName);
 
-    $sql = "INSERT INTO project SET project_name = ?, id_user = ?";
+    $sql = 'INSERT INTO project SET project_name = ?, id_user = ?';
     $stmt = db_get_prepare_stmt($conn, $sql, array($projectName, $userId));
 
     return mysqli_stmt_execute($stmt);
@@ -437,7 +437,7 @@ function compliteTask(mysqli $conn, int $taskId): bool
 {
 
     $sql = 'UPDATE task SET status = ? WHERE id = ?';
-    $stmt = db_get_prepare_stmt($conn, $sql, array('1', $taskId));
+    $stmt = db_get_prepare_stmt($conn, $sql, array(1, $taskId));
 
     return mysqli_stmt_execute($stmt);
 }
@@ -453,7 +453,7 @@ function uncompliteTask(mysqli $conn, int $taskId): bool
 {
 
     $sql = 'UPDATE task SET status = ? WHERE id = ?';
-    $stmt = db_get_prepare_stmt($conn, $sql, array('0', $taskId));
+    $stmt = db_get_prepare_stmt($conn, $sql, array(0, $taskId));
 
     return mysqli_stmt_execute($stmt);
 }
@@ -499,14 +499,14 @@ function getTaskSearch(mysqli $conn, int $user, string $searchWord):array
  * Функция clear - очистка ввода от тегов, спецсимволов
  *
  * @param string $var строка которую надо очистить
- * @return array
+ * @return string
  */
 
 function clear(string $var): string
 {
-$var =  htmlspecialchars(trim(strip_tags($var)), ENT_QUOTES, 'UTF-8');
+    $var =  htmlspecialchars(trim(strip_tags($var)), ENT_QUOTES, 'UTF-8');
 
-  return $var;
+    return $var;
 }
 
 /**
@@ -525,7 +525,7 @@ function sendemail(string $email, string $name, string $body): void
     $transport->setPassword('htmlacademy');
 // Формирование сообщения
     $message = new Swift_Message("Уведомление от сервиса «Дела в порядке»");
-    $message->setFrom(['keks@phpdemo.ru' => 'John Doe']);
+    $message->setFrom(['keks@phpdemo.ru' => 'Keks']);
     $message->setTo([$email => $name]);
     $message->setBody($body, 'text/plain');
 
