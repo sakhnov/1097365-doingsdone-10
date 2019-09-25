@@ -8,7 +8,8 @@ session_start();
  * @return array
  */
 
-function getProjects(mysqli $conn, int $user):array {
+function getProjects(mysqli $conn, int $user):array
+{
 
     $queryProject = 'select count(task.id) AS count_task, project.id, project.project_name from project left join task on id_project = project.id where project.id_user = ' . $user . ' group by project.project_name';
     $resultProject = mysqli_query($conn, $queryProject);
@@ -28,7 +29,8 @@ function getProjects(mysqli $conn, int $user):array {
  * @return array
  */
 
-function getTasks(mysqli $conn, int $user, string $showTask = null): array {
+function getTasks(mysqli $conn, int $user, string $showTask = null): array
+{
 
     switch ($showTask) {
         case 'today':
@@ -61,7 +63,8 @@ function getTasks(mysqli $conn, int $user, string $showTask = null): array {
  * @return array
  */
 
-function getTaskProject(mysqli $conn, int $user, int $idProject):array {
+function getTaskProject(mysqli $conn, int $user, int $idProject):array
+{
 
     $queryTask = 'select task.id, id_project, create_task, status, title, file, deadline from task join project on id_project = project.id where project.id_user = ' . $user . ' and project.id = ' . $idProject;
 
@@ -84,7 +87,8 @@ function getTaskProject(mysqli $conn, int $user, int $idProject):array {
  * @return boolean
  */
 
-function isUserProject(mysqli $conn, int $idProject, int $user): bool {
+function isUserProject(mysqli $conn, int $idProject, int $user): bool
+{
 
     $queryProject = 'select count(*) from project where id_user = ' . $user .' and id = ' . $idProject;
     $resultProject = mysqli_query($conn, $queryProject);
@@ -103,13 +107,22 @@ function isUserProject(mysqli $conn, int $idProject, int $user): bool {
  * @return boolean
  */
 
-function isDeadlineClose(string $deadline): bool {
+function isDeadlineClose(string $deadline): bool
+{
 
     return ($deadline && (floor(strtotime($deadline) - time()) <= 24*60*60));
 }
 
 
-function getPostVal($name) {
+/**
+ * Функция getPostVal - возвращает значение поля формы
+ *
+ * @param string $name имя поля формы
+ * @return string
+ */
+
+function getPostVal($name):string
+{
 
     return $_POST[$name] ?? "";
 }
@@ -124,10 +137,14 @@ function getPostVal($name) {
  * @return array
  */
 
-function errorsFormTask(mysqli $conn, array $post, int $user): array {
+function errorsFormTask(mysqli $conn, array $post, int $user): array
+{
 
     $errors = [];
-    if (!$post) { return $errors; }
+    if (!$post) {
+
+		return $errors;
+	}
 
     if (empty($post['name'])) {
         $errors['name'] = 'Напишите название задачи';
@@ -137,7 +154,7 @@ function errorsFormTask(mysqli $conn, array $post, int $user): array {
 
         if (!is_date_valid($post['date'])) {
             $errors['date'] = 'Не верный формат даты';
-        } elseif ($post['date'] < date("Y-m-d")) {
+        } elseif ($post['date'] < date('Y-m-d')) {
             $errors['date'] = 'Дата выполнения должна быть из будущего';
         }
     }
@@ -163,7 +180,8 @@ function errorsFormTask(mysqli $conn, array $post, int $user): array {
  * @return boolean
  */
 
-function addTask(mysqli $conn, int $taskProject, string $taskName, string $taskDate, array $file): bool {
+function addTask(mysqli $conn, int $taskProject, string $taskName, string $taskDate, array $file): bool
+{
 
     $file_url = false;
     if (!empty($file['file']['name'])) {
@@ -175,11 +193,14 @@ function addTask(mysqli $conn, int $taskProject, string $taskName, string $taskD
         move_uploaded_file($file['file']['tmp_name'], $file_path . $file_name);
     }
 
+    $taskName = mysqli_real_escape_string($conn, $taskName);
+    $taskDate = mysqli_real_escape_string($conn, $taskDate);
+
     if ($file_url) {
-        $sql = "INSERT INTO task SET id_project = ?, status = false, title = ?, deadline = ?, file = ?";
+        $sql = 'INSERT INTO task SET id_project = ?, status = false, title = ?, deadline = ?, file = ?';
         $stmt = db_get_prepare_stmt($conn, $sql, array($taskProject, $taskName, $taskDate, $file_url));
     } else {
-        $sql = "INSERT INTO task SET id_project = ?, status = false, title = ?, deadline = ?";
+        $sql = 'INSERT INTO task SET id_project = ?, status = false, title = ?, deadline = ?';
         $stmt = db_get_prepare_stmt($conn, $sql, array($taskProject, $taskName, $taskDate));
     }
 
@@ -195,7 +216,8 @@ function addTask(mysqli $conn, int $taskProject, string $taskName, string $taskD
  * @return array
  */
 
-function errorsFormRegister(mysqli $conn, array $post): array {
+function errorsFormRegister(mysqli $conn, array $post): array
+{
 
     $errors = [];
     if (!$post) { return $errors; }
@@ -226,8 +248,12 @@ function errorsFormRegister(mysqli $conn, array $post): array {
  * @param string $email регистрируемый email пользователя
  * @return boolean
  */
-function checkUserEmail(mysqli $conn, string $email): bool  {
 
+function checkUserEmail(mysqli $conn, string $email): bool
+{
+
+	$result = [];
+    $email = mysqli_real_escape_string($conn, $email);
     $sql = 'SELECT count(*) FROM user WHERE email = "' . $email .'"';
     $result1 = mysqli_query($conn, $sql);
 
@@ -248,12 +274,17 @@ function checkUserEmail(mysqli $conn, string $email): bool  {
  * @return boolean
  */
 
-function addUser(mysqli $conn, string $userName, string $userEmail, string $userPassword): bool {
+function addUser(mysqli $conn, string $userName, string $userEmail, string $userPassword): bool
+{
 
-        $sql = "INSERT INTO user SET name = ?, email = ?, pass = ?";
+        $userName = mysqli_real_escape_string($conn, $userName);
+        $userEmail = mysqli_real_escape_string($conn, $userEmail);
+        $userPassword = mysqli_real_escape_string($conn, $userPassword);
+
+        $sql = 'INSERT INTO user SET name = ?, email = ?, pass = ?';
         $stmt = db_get_prepare_stmt($conn, $sql, array($userName, $userEmail, password_hash($userPassword, PASSWORD_DEFAULT)));
 
-    return mysqli_stmt_execute($stmt);;
+    return mysqli_stmt_execute($stmt);
 }
 
 /**
@@ -263,7 +294,9 @@ function addUser(mysqli $conn, string $userName, string $userEmail, string $user
  * @param int|null $user_id
  * @return array
  */
-function getUserInfo(mysqli $conn, int $userId = null):array {
+
+function getUserInfo(mysqli $conn, int $userId = null):array
+{
     $result = [];
     if (isset($userId) && !empty($userId)) {
         $sql = 'select id, email, name, pass from user where id = ' . $userId;
@@ -284,7 +317,8 @@ function getUserInfo(mysqli $conn, int $userId = null):array {
  * @return array
  */
 
-function errorsFormAuth(mysqli $conn, array $post): array {
+function errorsFormAuth(mysqli $conn, array $post): array
+{
 
     $errors = [];
     if (!$post) { return $errors; }
@@ -310,23 +344,30 @@ function errorsFormAuth(mysqli $conn, array $post): array {
  * @param string $userFormPass введеный пароль
  * @return boolean
  */
-function userAuth($conn, string $userFormEmail, string $userFormPass): bool {
+
+function userAuth($conn, string $userFormEmail, string $userFormPass): bool
+{
+
+        $userFormEmail = mysqli_real_escape_string($conn, $userFormEmail);
+        $userFormPass = mysqli_real_escape_string($conn, $userFormPass);
 
         $sql = 'select id, pass from user where email = "' . $userFormEmail . '"';
         $result = mysqli_query($conn, $sql);
-        if ($result->num_rows) {
-            $result = mysqli_fetch_array($result, MYSQLI_ASSOC);
-            if (password_verify($userFormPass, $result['pass'])) {
-                $_SESSION['userId'] = $result['id'];
 
-                return true;
-            } else {
-                return false;
-            }
-        } else {
+		if (!$result->num_rows) {
+			return false;
+		}
 
-            return false;
-        }
+		$result = mysqli_fetch_array($result, MYSQLI_ASSOC);
+		if (password_verify($userFormPass, $result['pass'])) {
+			$_SESSION['userId'] = $result['id'];
+
+			return true;
+		} else {
+
+			return false;
+		}
+
 }
 
 
@@ -338,7 +379,8 @@ function userAuth($conn, string $userFormEmail, string $userFormPass): bool {
  * @return array
  */
 
-function errorsFormProject(mysqli $conn, array $post): array {
+function errorsFormProject(mysqli $conn, array $post): array
+{
 
     $errors = [];
     if (!$post) { return $errors; }
@@ -359,10 +401,12 @@ function errorsFormProject(mysqli $conn, array $post): array {
  * @return boolean
  */
 
-function addProject(mysqli $conn, string $projectName, int $userId): bool {
+function addProject(mysqli $conn, string $projectName, int $userId): bool
+{
 
+    $projectName = mysqli_real_escape_string($conn, $projectName);
 
-    $sql = "INSERT INTO project SET project_name = ?, id_user = ?";
+    $sql = 'INSERT INTO project SET project_name = ?, id_user = ?';
     $stmt = db_get_prepare_stmt($conn, $sql, array($projectName, $userId));
 
     return mysqli_stmt_execute($stmt);
@@ -373,13 +417,13 @@ function addProject(mysqli $conn, string $projectName, int $userId): bool {
  * Функция logoutUser - Выход из учетной записи. Разлогинивание пользователя.
  */
 
-function logoutUser() {
+function logoutUser():void
+{
 
     if (isset($_SESSION['userId']) && !empty($_SESSION['userId'])) {
-            $_SESSION['userId'] = null;
-            header('Location: /');
+        $_SESSION['userId'] = null;
+        header('Location: /');
     }
-
 }
 
 /**
@@ -389,10 +433,11 @@ function logoutUser() {
  * @param int $taskId id задачи
  * @return boolean
  */
-function compliteTask(mysqli $conn, int $taskId): bool {
+function compliteTask(mysqli $conn, int $taskId): bool
+{
 
-    $sql = "UPDATE task SET status = ? WHERE id = ?";
-    $stmt = db_get_prepare_stmt($conn, $sql, array('1', $taskId));
+    $sql = 'UPDATE task SET status = ? WHERE id = ?';
+    $stmt = db_get_prepare_stmt($conn, $sql, array(1, $taskId));
 
     return mysqli_stmt_execute($stmt);
 }
@@ -404,10 +449,11 @@ function compliteTask(mysqli $conn, int $taskId): bool {
  * @param int $taskId id задачи
  * @return boolean
  */
-function uncompliteTask(mysqli $conn, int $taskId): bool {
+function uncompliteTask(mysqli $conn, int $taskId): bool
+{
 
-    $sql = "UPDATE task SET status = ? WHERE id = ?";
-    $stmt = db_get_prepare_stmt($conn, $sql, array('0', $taskId));
+    $sql = 'UPDATE task SET status = ? WHERE id = ?';
+    $stmt = db_get_prepare_stmt($conn, $sql, array(0, $taskId));
 
     return mysqli_stmt_execute($stmt);
 }
@@ -419,8 +465,9 @@ function uncompliteTask(mysqli $conn, int $taskId): bool {
  * @param int $taskId id задачи
  * @return boolean
  */
-function deleteTask(mysqli $conn, int $taskId): bool {
-    $sql = "DELETE FROM task WHERE id = ?";
+function deleteTask(mysqli $conn, int $taskId): bool
+{
+    $sql = 'DELETE FROM task WHERE id = ?';
     $stmt = db_get_prepare_stmt($conn, $sql, array($taskId));
 
     return mysqli_stmt_execute($stmt);
@@ -433,8 +480,11 @@ function deleteTask(mysqli $conn, int $taskId): bool {
  * @return array
  */
 
-function getTaskSearch(mysqli $conn, int $user, string $searchWord):array {
+function getTaskSearch(mysqli $conn, int $user, string $searchWord):array
+{
+
     $returnTask = [];
+    $searchWord = mysqli_real_escape_string($conn, $searchWord);
     $queryTask = 'select task.id, id_project, create_task, status, title, file, deadline from task join project on id_project = project.id where project.id_user = ' . $user .' and MATCH(title) AGAINST("' . $searchWord . '")';
 
     $resultTask = mysqli_query($conn, $queryTask);
@@ -449,13 +499,14 @@ function getTaskSearch(mysqli $conn, int $user, string $searchWord):array {
  * Функция clear - очистка ввода от тегов, спецсимволов
  *
  * @param string $var строка которую надо очистить
- * @return array
+ * @return string
  */
 
-function clear(string $var): string {
-$var =  htmlspecialchars(trim(strip_tags($var)), ENT_QUOTES, 'UTF-8');
+function clear(string $var): string
+{
+    $var =  htmlspecialchars(trim(strip_tags($var)), ENT_QUOTES, 'UTF-8');
 
-  return $var;
+    return $var;
 }
 
 /**
@@ -466,14 +517,15 @@ $var =  htmlspecialchars(trim(strip_tags($var)), ENT_QUOTES, 'UTF-8');
  * @param string $body сообщение.
  */
 
-function sendemail(string $email, string $name, string $body) {
+function sendemail(string $email, string $name, string $body): void
+{
 
     $transport = new Swift_SmtpTransport('phpdemo.ru', 25);
     $transport->setUsername('keks@phpdemo.ru');
     $transport->setPassword('htmlacademy');
 // Формирование сообщения
     $message = new Swift_Message("Уведомление от сервиса «Дела в порядке»");
-    $message->setFrom(['keks@phpdemo.ru' => 'John Doe']);
+    $message->setFrom(['keks@phpdemo.ru' => 'Keks']);
     $message->setTo([$email => $name]);
     $message->setBody($body, 'text/plain');
 

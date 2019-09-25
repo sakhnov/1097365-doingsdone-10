@@ -25,7 +25,7 @@ if ($conn == false) {
         if ($_GET['complete_task'] == 1 && $_GET['task_id']) {
            compliteTask($conn, intval($_GET['task_id']));
         } elseif ($_GET['complete_task'] == 0 && $_GET['task_id']) {
-           uncompliteTask($conn, $_GET['task_id']);
+           uncompliteTask($conn, intval($_GET['task_id']));
         }
 
         if ($_GET['delete_task']) {
@@ -56,9 +56,3 @@ if ($conn == false) {
 
 
 }
-
-
-
-?>
-
-

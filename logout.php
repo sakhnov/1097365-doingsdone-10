@@ -4,4 +4,3 @@ include_once ('function.php');
 
 	logoutUser();
 
-?>
