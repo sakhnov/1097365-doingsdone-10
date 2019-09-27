@@ -1,13 +1,13 @@
 <?php
-include_once ('helpers.php');
-include_once ('function.php');
+include_once('helpers.php');
+include_once('function.php');
 
 $title = 'Список задач - Дела в Порядке';
 
 // Подключение к Базе Данных
 $conn = mysqli_connect('localhost', 'root', '', '1097365-doingsdone-10');
 
-if ($conn == false) {
+if ($conn === false) {
 
     echo 'Ошибка подключения: ' . mysqli_connect_error();
 
@@ -15,6 +15,8 @@ if ($conn == false) {
         $userInfo = getUserInfo($conn, intval($_SESSION['userId']));
         if (!$userInfo) { header('Location: /'); }
 
+        $errors = [];
+        $content = '';
         if ($_POST) {
             $errors = errorsFormTask($conn, $_POST, intval($userInfo['id']));
 
@@ -23,7 +25,7 @@ if ($conn == false) {
             } else {
                 $taskName = mysqli_real_escape_string($conn, $_POST['name']);
                 $taskProject = intval($_POST['project']);
-                $taskDate = $_POST['date'];
+                $taskDate = $_POST['date'] ?? "";
 
                 addTask($conn, $taskProject, $taskName, $taskDate, $_FILES);
                 header('Location: /');
@@ -32,7 +34,9 @@ if ($conn == false) {
 
             $content =  include_template('form-task.php', ['main_list' => getProjects($conn, intval($userInfo['id'])), 'title' => $title ]);
         }
+
+        echo include_template('layout.php', ['main_list' => getProjects($conn, intval($userInfo['id'])), 'content' => $content, 'title' => $title, 'userInfo' => $userInfo]);
 }
 
-echo include_template('layout.php', ['main_list' => getProjects($conn, intval($userInfo['id'])), 'content' => $content, 'title' => $title, 'userInfo' => $userInfo]);
+
 

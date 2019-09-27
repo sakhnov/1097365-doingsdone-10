@@ -5,7 +5,8 @@
           <div class="form__row">
             <label class="form__label" for="project_name">Название <sup>*</sup></label>
 
-            <input class="form__input <?= ($errors['name']) ? 'form__input--error' : '' ?>" type="text" name="name" id="project_name" value="" placeholder="Введите название проекта">
+            <input class="form__input <?= (isset($errors['name'])) ? 'form__input--error' : '' ?>" type="text"
+                   name="name" id="project_name" value="" placeholder="Введите название проекта">
              <p class="form__message"><?= $errors['name'] ?? ""; ?></p>
           </div>
 

@@ -15,52 +15,52 @@
 <div class="page-wrapper">
     <div class="container <?= ($userInfo) ? 'container--with-sidebar' : ''; ?> ">
 
-<?php if ($userInfo) : ?>
-        <header class="main-header">
-            <a href="/">
-                <img src="img/logo.png" width="153" height="42" alt="Логотип Дела в порядке">
-            </a>
+        <?php if ($userInfo) : ?>
+                <header class="main-header">
+                    <a href="/">
+                        <img src="img/logo.png" width="153" height="42" alt="Логотип Дела в порядке">
+                    </a>
 
-            <div class="main-header__side">
-                <a class="main-header__side-item button button--plus open-modal" href="add.php">Добавить задачу</a>
+                    <div class="main-header__side">
+                        <a class="main-header__side-item button button--plus open-modal" href="add.php">Добавить задачу</a>
 
-                <div class="main-header__side-item user-menu">
-                    <div class="user-menu__data">
-                        <p><?= htmlspecialchars($userInfo['name']); ?></p>
+                        <div class="main-header__side-item user-menu">
+                            <div class="user-menu__data">
+                                <p><?= htmlspecialchars($userInfo['name']); ?></p>
 
-                        <a href="logout.php">Выйти</a>
+                                <a href="logout.php">Выйти</a>
+                            </div>
+                        </div>
                     </div>
+                </header>
+
+                <div class="content">
+                    <section class="content__side">
+                        <h2 class="content__side-heading">Проекты</h2>
+
+                        <nav class="main-navigation">
+                            <ul class="main-navigation__list">
+                                <?php foreach ($main_list as $value): ?>
+                                    <li class="main-navigation__list-item <?= (isset($_GET["project"]) && $_GET["project"] == $value['id']) ? 'main-navigation__list-item--active' : ''; ?>">
+                                        <a class="main-navigation__list-item-link" href="/?project=<?= $value['id'] ?? ""; ?>"><?= htmlspecialchars($value['project_name']); ?></a>
+                                        <span class="main-navigation__list-item-count"><?= htmlspecialchars($value['count_task']); ?></span>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </nav>
+
+                        <a class="button button--transparent button--plus content__side-button"
+                           href="add-project.php" target="project_add">Добавить проект</a>
+                    </section>
+
+                    <?= $content ?? ""; ?>
+
                 </div>
-            </div>
-        </header>
+        <?php else: ?>
 
-        <div class="content">
-            <section class="content__side">
-                <h2 class="content__side-heading">Проекты</h2>
+                <?= $guest ?? ""; ?>
 
-                <nav class="main-navigation">
-                    <ul class="main-navigation__list">
-                        <?php foreach ($main_list as $value): ?>
-                            <li class="main-navigation__list-item <?= ($_GET["project"] == $value['id']) ? 'main-navigation__list-item--active' : ''; ?>">
-                                <a class="main-navigation__list-item-link" href="/?project=<?= $value['id']; ?>"><?= htmlspecialchars($value['project_name']); ?></a>
-                                <span class="main-navigation__list-item-count"><?= htmlspecialchars($value['count_task']); ?></span>
-                            </li>
-                        <?php endforeach; ?>
-                    </ul>
-                </nav>
-
-                <a class="button button--transparent button--plus content__side-button"
-                   href="add-project.php" target="project_add">Добавить проект</a>
-            </section>
-
-            <?= $content; ?>
-
-        </div>
-     <?php else : ?>
-
-        <?= $guest; ?>
-
-     <?php endif; ?>
+        <?php endif; ?>
     </div>
 </div>
 

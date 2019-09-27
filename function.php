@@ -10,7 +10,6 @@ session_start();
 
 function getProjects(mysqli $conn, int $user):array
 {
-
     $queryProject = 'select count(task.id) AS count_task, project.id, project.project_name from project left join task on id_project = project.id where project.id_user = ' . $user . ' group by project.project_name';
     $resultProject = mysqli_query($conn, $queryProject);
     if ($resultProject) {
@@ -31,7 +30,6 @@ function getProjects(mysqli $conn, int $user):array
 
 function getTasks(mysqli $conn, int $user, string $showTask = null): array
 {
-
     switch ($showTask) {
         case 'today':
             $queryTask = 'select task.id, id_project, create_task, status, title, file, deadline from task join project on id_project = project.id where project.id_user = ' . $user . ' and STR_TO_DATE(deadline, "%Y-%m-%d") = CURDATE()';
@@ -65,7 +63,6 @@ function getTasks(mysqli $conn, int $user, string $showTask = null): array
 
 function getTaskProject(mysqli $conn, int $user, int $idProject):array
 {
-
     $queryTask = 'select task.id, id_project, create_task, status, title, file, deadline from task join project on id_project = project.id where project.id_user = ' . $user . ' and project.id = ' . $idProject;
 
     $resultTask = mysqli_query($conn, $queryTask);
@@ -89,7 +86,6 @@ function getTaskProject(mysqli $conn, int $user, int $idProject):array
 
 function isUserProject(mysqli $conn, int $idProject, int $user): bool
 {
-
     $queryProject = 'select count(*) from project where id_user = ' . $user .' and id = ' . $idProject;
     $resultProject = mysqli_query($conn, $queryProject);
 
@@ -139,7 +135,6 @@ function getPostVal($name):string
 
 function errorsFormTask(mysqli $conn, array $post, int $user): array
 {
-
     $errors = [];
     if (!$post) {
 
@@ -182,7 +177,6 @@ function errorsFormTask(mysqli $conn, array $post, int $user): array
 
 function addTask(mysqli $conn, int $taskProject, string $taskName, string $taskDate, array $file): bool
 {
-
     $file_url = false;
     if (!empty($file['file']['name'])) {
         $pathinfo = pathinfo($file['file']['name']);
@@ -218,7 +212,6 @@ function addTask(mysqli $conn, int $taskProject, string $taskName, string $taskD
 
 function errorsFormRegister(mysqli $conn, array $post): array
 {
-
     $errors = [];
     if (!$post) { return $errors; }
 
@@ -251,7 +244,6 @@ function errorsFormRegister(mysqli $conn, array $post): array
 
 function checkUserEmail(mysqli $conn, string $email): bool
 {
-
 	$result = [];
     $email = mysqli_real_escape_string($conn, $email);
     $sql = 'SELECT count(*) FROM user WHERE email = "' . $email .'"';
@@ -276,7 +268,6 @@ function checkUserEmail(mysqli $conn, string $email): bool
 
 function addUser(mysqli $conn, string $userName, string $userEmail, string $userPassword): bool
 {
-
         $userName = mysqli_real_escape_string($conn, $userName);
         $userEmail = mysqli_real_escape_string($conn, $userEmail);
         $userPassword = mysqli_real_escape_string($conn, $userPassword);
@@ -319,7 +310,6 @@ function getUserInfo(mysqli $conn, int $userId = null):array
 
 function errorsFormAuth(mysqli $conn, array $post): array
 {
-
     $errors = [];
     if (!$post) { return $errors; }
 
@@ -347,7 +337,6 @@ function errorsFormAuth(mysqli $conn, array $post): array
 
 function userAuth($conn, string $userFormEmail, string $userFormPass): bool
 {
-
         $userFormEmail = mysqli_real_escape_string($conn, $userFormEmail);
         $userFormPass = mysqli_real_escape_string($conn, $userFormPass);
 
@@ -363,11 +352,9 @@ function userAuth($conn, string $userFormEmail, string $userFormPass): bool
 			$_SESSION['userId'] = $result['id'];
 
 			return true;
-		} else {
-
-			return false;
 		}
 
+		return false;
 }
 
 
@@ -381,7 +368,6 @@ function userAuth($conn, string $userFormEmail, string $userFormPass): bool
 
 function errorsFormProject(mysqli $conn, array $post): array
 {
-
     $errors = [];
     if (!$post) { return $errors; }
 
@@ -403,7 +389,6 @@ function errorsFormProject(mysqli $conn, array $post): array
 
 function addProject(mysqli $conn, string $projectName, int $userId): bool
 {
-
     $projectName = mysqli_real_escape_string($conn, $projectName);
 
     $sql = 'INSERT INTO project SET project_name = ?, id_user = ?';
@@ -419,7 +404,6 @@ function addProject(mysqli $conn, string $projectName, int $userId): bool
 
 function logoutUser():void
 {
-
     if (isset($_SESSION['userId']) && !empty($_SESSION['userId'])) {
         $_SESSION['userId'] = null;
         header('Location: /');
@@ -435,7 +419,6 @@ function logoutUser():void
  */
 function compliteTask(mysqli $conn, int $taskId): bool
 {
-
     $sql = 'UPDATE task SET status = ? WHERE id = ?';
     $stmt = db_get_prepare_stmt($conn, $sql, array(1, $taskId));
 
@@ -451,7 +434,6 @@ function compliteTask(mysqli $conn, int $taskId): bool
  */
 function uncompliteTask(mysqli $conn, int $taskId): bool
 {
-
     $sql = 'UPDATE task SET status = ? WHERE id = ?';
     $stmt = db_get_prepare_stmt($conn, $sql, array(0, $taskId));
 
@@ -482,7 +464,6 @@ function deleteTask(mysqli $conn, int $taskId): bool
 
 function getTaskSearch(mysqli $conn, int $user, string $searchWord):array
 {
-
     $returnTask = [];
     $searchWord = mysqli_real_escape_string($conn, $searchWord);
     $queryTask = 'select task.id, id_project, create_task, status, title, file, deadline from task join project on id_project = project.id where project.id_user = ' . $user .' and MATCH(title) AGAINST("' . $searchWord . '")';
@@ -519,7 +500,6 @@ function clear(string $var): string
 
 function sendemail(string $email, string $name, string $body): void
 {
-
     $transport = new Swift_SmtpTransport('phpdemo.ru', 25);
     $transport->setUsername('keks@phpdemo.ru');
     $transport->setPassword('htmlacademy');
@@ -532,5 +512,4 @@ function sendemail(string $email, string $name, string $body): void
 // Отправка сообщения
     $mailer = new Swift_Mailer($transport);
     $mailer->send($message);
-
 }

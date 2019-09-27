@@ -1,11 +1,11 @@
 <?php
 require 'vendor/autoload.php';
-include_once ('helpers.php');
-include_once ('function.php');
+include_once('helpers.php');
+include_once('function.php');
 
 $conn = mysqli_connect('localhost', 'root', '', '1097365-doingsdone-10');
 
-if ($conn == false) {
+if ($conn === false) {
 
     echo 'Ошибка подключения: ' . mysqli_connect_error();
 
