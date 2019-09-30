@@ -1,4 +1,6 @@
-CREATE DATABASE `1097365-doingsdone-10`;
+CREATE DATABASE `1097365-doingsdone-10`
+    DEFAULT CHARACTER SET utf8
+    DEFAULT COLLATE utf8_general_ci;
 
 USE `1097365-doingsdone-10`;
 
@@ -24,8 +26,8 @@ CREATE TABLE `1097365-doingsdone-10`.`user` (
 	 `id` INT NOT NULL AUTO_INCREMENT ,
 	 `create_user` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ,
 	 `email` VARCHAR(250) NOT NULL UNIQUE,
-	 `name` TEXT NOT NULL ,
-	 `pass` TEXT NOT NULL ,
+	 `name` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
+	 `pass` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
 	 PRIMARY KEY (`id`)
 );
 

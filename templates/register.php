@@ -56,7 +56,7 @@
                         <label class="form__label" for="name">Имя <sup>*</sup></label>
 
                         <input class="form__input <?= (isset($errors['name'])) ? 'form__input--error' : '' ?>"
-                               type="text" name="name" id="name" value="<?= getPostVal('date'); ?>" placeholder="Введите Имя">
+                               type="text" name="name" id="name" value="<?= getPostVal('name'); ?>" placeholder="Введите Имя">
 
                         <p class="form__message"><?= $errors['name'] ?? ""; ?></p>
                     </div>

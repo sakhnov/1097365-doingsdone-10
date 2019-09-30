@@ -25,8 +25,8 @@ if ($conn === false) {
         } elseif (count($errors)) {
             echo include_template('auth.php', ['title' => $title, 'errors' => $errors]);
         } else {
-            $errors['password'] = 'Пароль не подходит';
-            echo include_template('auth.php', ['title' => $title, 'errors' => $errors]);
+            $errorBoth = true;
+            echo include_template('auth.php', ['title' => $title, 'errors' => $errors, 'errorBoth' => $errorBoth]);
         }
 
     } else {

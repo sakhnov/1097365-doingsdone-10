@@ -16,7 +16,7 @@
                         <select class="form__input form__input--select <?= (isset($errors['project'])) ? 'form__input--error' : '' ?>" name="project" id="project">
                             <option >-- Выберите проект --</option>
                             <?php foreach ($main_list as $value): ?>
-                                <option value="<?= $value['id'] ?? ""; ?>" <?= (isset($value['id']) && $value['id'] == getPostVal('project')) ? 'selected' : '' ?> ><?= htmlspecialchars($value['project_name']); ?></option>
+                                <option value="<?= $value['id'] ?? ""; ?>" <?= (isset($value['id']) && $value['id'] === getPostVal('project')) ? 'selected' : '' ?> ><?= htmlspecialchars($value['project_name']); ?></option>
                             <?php endforeach; ?>
                         </select>
                         <p class="form__message"><?= $errors['project'] ?? ""; ?></p>
@@ -43,6 +43,8 @@
                     </div>
 
                     <div class="form__row form__row--controls">
+                        <?= (isset($errors)) ? '<p class="error-message">Пожалуйста, исправьте ошибки в форме</p>' : '' ?>
+
                         <input class="button" type="submit" name="" value="Добавить">
                     </div>
                 </form>

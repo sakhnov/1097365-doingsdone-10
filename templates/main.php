@@ -17,7 +17,7 @@
 
         <label class="checkbox">
             <!--добавить сюда атрибут "checked", если переменная $show_complete_tasks равна единице-->
-            <input class="checkbox__input visually-hidden show_completed" type="checkbox" <?= ($show_complete_tasks == 1) ? 'checked' : ''; ?>>
+            <input class="checkbox__input visually-hidden show_completed" type="checkbox" <?= ($show_complete_tasks === 1) ? 'checked' : ''; ?>>
             <span class="checkbox__text">Показывать выполненные</span>
         </label>
     </div>
@@ -27,15 +27,14 @@
         <!--показывать следующий тег <tr/>, если переменная $show_complete_tasks равна единице-->
 
         <?php foreach ($tasks as $value): ?>
-            <?php if (isset($value['status']) && $value['status'] == true && $show_complete_tasks == 0) {
+            <?php if (isset($value['status']) && $value['status'] === '1' && $show_complete_tasks === 0) {
                 continue;
             } ?>
 
-            <tr class="tasks__item task <?= (isset($value['status']) && $value['status'] == true) ? 'task--completed'
-                : ''; ?> <?= isDeadlineClose(htmlspecialchars($value['deadline'])) ? 'task--important' : ''; ?>">
+            <tr class="tasks__item task <?= (isset($value['status']) && $value['status'] === '1') ? 'task--completed' : ''; ?> <?= isDeadlineClose(htmlspecialchars($value['deadline'])) ? 'task--important' : ''; ?>">
                 <td class="task__select">
                     <label class="checkbox task__checkbox">
-                        <input class="checkbox__input visually-hidden" type="checkbox" >
+                        <input class="checkbox__input visually-hidden" type="checkbox" <?= (isset($value['status']) && $value['status'] === '1') ? 'checked' : ''; ?>>
                         <span class="checkbox__text"><?= htmlspecialchars($value['title']); ?> <?= (isset($value['file'])) ? '(<a href="'.$value['file'].'">file</a>)' : ''; ?> </span>
                     </label>
                 </td>
@@ -44,7 +43,7 @@
                     <button class="expand-control" type="button" name="button">Дополнительные действия</button>
                     <ul class="expand-list hidden">
                         <li class="expand-list__item">
-                            <?php if(isset($value['status']) && $value['status'] == true): ?>
+                            <?php if(isset($value['status']) && $value['status'] === '1'): ?>
                                 <a href="?complete_task=0&task_id=<?= $value['id'] ?? "" ?>">
                                     Отметить как невыполненную
                                 </a>

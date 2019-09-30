@@ -363,16 +363,25 @@ function userAuth($conn, string $userFormEmail, string $userFormPass): bool
  *
  * @param mysqli $conn подключение к БД
  * @param array $post массив $_POST передаваемый из формы
+ * @param int $userId id пользователя
  * @return array
  */
 
-function errorsFormProject(mysqli $conn, array $post): array
+function errorsFormProject(mysqli $conn, array $post, int $userId): array
 {
     $errors = [];
     if (!$post) { return $errors; }
 
     if (empty($post['name'])) {
         $errors['name'] = 'Введите название проекта';
+    } else {
+        $sql = 'select id from project where id_user = "' . $userId . '" and project_name = "' . $post['name'] .'"';
+        $result = mysqli_query($conn, $sql);
+
+        if ($result->num_rows > 0) {
+            $errors['name'] = 'Такой проект уже существует';
+        }
+
     }
 
     return $errors;

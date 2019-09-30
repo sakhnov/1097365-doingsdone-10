@@ -12,20 +12,23 @@ if ($conn === false) {
     echo 'Ошибка подключения: ' . mysqli_connect_error();
 
 } else {
-
-    $userInfo = getUserInfo($conn, intval($_SESSION['userId']));
-
-    if ($userInfo) {
+    $userInfo = [];
+    if (isset($_SESSION['userId'])) {
+        $userInfo = getUserInfo($conn, intval($_SESSION['userId']));
+    }
+    if (!empty($userInfo)) {
 
         $show_complete_tasks = 0;
         if (!empty($_GET['show_completed'])) {
             $show_complete_tasks = 1;
         }
 
-        if (isset($_GET['complete_task']) && $_GET['complete_task'] == 1 && !empty($_GET['task_id']) && is_numeric($_GET['task_id'])) {
+        if (isset($_GET['complete_task']) && $_GET['complete_task'] === '1' && !empty($_GET['task_id']) && is_numeric
+            ($_GET['task_id'])) {
            compliteTask($conn, $_GET['task_id']);
         }
-        if (isset($_GET['complete_task']) && $_GET['complete_task'] == 0 && !empty($_GET['task_id']) && is_numeric($_GET['task_id'])) {
+        if (isset($_GET['complete_task']) && $_GET['complete_task'] === '0' && !empty($_GET['task_id']) && is_numeric
+            ($_GET['task_id'])) {
            uncompliteTask($conn, $_GET['task_id']);
         }
         if (!empty($_GET['delete_task']) && is_numeric($_GET['delete_task'])) {
